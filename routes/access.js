@@ -1,0 +1,248 @@
+const router = require('express').Router();
+const mongoose = require('mongoose');
+const User = mongoose.model('User');
+const passport = require('passport');
+const utils = require('../lib/utils');
+const nodemailer = require('nodemailer');
+// const { token } = req.params;
+
+
+// validation
+const { registerValidation, loginValidation } = require("../validation");
+
+router.post('/login', (req, res, next ) => {
+
+    console.log(req.body);
+    User.findOne({ username: req.body.username})
+        .then((user) => {
+            if(!user) {
+                res.status(401).json({ success: false, msg: "Could not find user" })
+            }
+
+            
+            if (user.status != "Active") {
+                // Redirect to login page  
+                return res.status(401).send({
+                    message: "Pending Account. Please Verify Your Email!",
+                  });
+
+            } else {
+
+            console.log(req.body.password);
+            const isValid = utils.validPassword(req.body.password, user.hash, user.salt)
+
+            if(isValid) { 
+                const tokenObject = utils.issueJWT(user);
+                
+                res.status(200).json({ success: true, user: user, token: tokenObject.token, expiresIn: "3600"})
+            
+            } else {
+            
+                res.status(401).json({ success: false, msg: "You entered the wrong password"})
+            
+            }
+
+            }
+
+            
+        })
+        .catch((err) => {
+            next(err);
+        });
+})
+
+router.post('/register', async (req, res, next ) => {
+
+    console.log("Got here")
+    
+    // if (req.body.password === req.body.confirm_password) {
+        
+         // validate the user
+        // const { error } = registerValidation(req.body);
+
+        // throw validation errors
+        // if (error) return res.status(400).json({ error: error.details[0].message });
+
+        // Name database check
+        const nameRetrieved = await User.findOne({ name: req.body.name });
+        // Send the response here 
+        
+        // Username database check
+        const usernameRetrieved = await User.findOne({ username: req.body.username })
+        console.log(usernameRetrieved)
+        // Send the response here
+
+        // Email database check
+        const emailRetrieved = await User.findOne({ email: req.body.email }) 
+        // Send the response here 
+
+        if (nameRetrieved) {
+           // Send a response to the user to use a different name
+           console.log("Name block")
+           res.status(491).json({
+            type: "Error",
+            msg: "Name taken, try a diffferent name"
+        })
+        if (nameRetrieved) return
+        } 
+
+        if (usernameRetrieved) {
+            console.log("Username Blocl")
+             res.status(491).json({
+                type: "Error", 
+                msg: "Username taken, try a different username "
+            })
+        } 
+        if (usernameRetrieved) return
+
+        if (emailRetrieved) {
+             res.json({
+                type: "Error", 
+                msg: " Email taken, try a different email"
+            })
+        } if (emailRetrieved) return 
+
+        if (nameRetrieved && usernameRetrieved) {
+            // Tell the user to check the name and username input fields
+             res.json({
+                type: "Error",
+                msg: "Change your name and username`"
+            })
+        }
+        if (nameRetrieved && usernameRetrieved) return
+
+        if (nameRetrieved && emailRetrieved) {
+            // Tell the user to check the name and email input fields
+            res.json({
+                type: "Error",
+                msg: "Change your Name and Email"
+            })
+        }
+        if (nameRetrieved && emailRetrieved) return
+
+        if (usernameRetrieved && emailRetrieved) {
+            // Tell the user to check the username and email input fields
+            res.json({
+                type: "Error",
+                msg: "Change your Username and Email"
+            })
+        }
+        if (usernameRetrieved && emailRetrieved) return
+
+        if (nameRetrieved && usernameRetrieved && emailRetrieved) {
+            // Tell the user to check the name, username and email input fields
+            res.json({
+                type: "Error",
+                msg: "Change your Name, Username and Email" 
+            })
+        } 
+        if (nameRetrieved && usernameRetrieved && emailRetrieved) return
+
+        if (!nameRetrieved && !usernameRetrieved && !emailRetrieved) {
+            // Everything is unique proceed to create new user
+
+            //   Generate hash and salt from the password
+            const saltHash = utils.genPassword(req.body.password);
+
+            const salt = saltHash.salt;
+
+            const hash = saltHash.hash;
+        
+            const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            let token = '';
+            for (let i = 0; i < 25; i++) {
+            token += characters[Math.floor(Math.random() * characters.length )];
+            }
+
+            const newUser = new User({
+                name: req.body.name,
+                username: req.body.username,
+                email: req.body.email,
+                hash: hash,
+                salt: salt,
+                confirmationCode: token
+            });
+
+            newUser.save()
+            .then((user) => {
+                // const jwt = utils.issueJWT(user);
+
+                // res.json({ success: true, user: user, token: jwt.token, expiresIn: jwt.expires})
+            })
+
+
+            // Send Mail Configuration 
+            
+        const sendMail = () => {
+
+        let transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: "uzochukwunwigwe@gmail.com",
+                pass: "googlemail100"
+                // user: `${req.body.details.emailSender}`,
+                // pass: `${req.body.details.emailPassword}`
+            }
+        });
+    
+        let mailOptions = {
+            from: "uzochukwunwigwe@gmail.com",
+            // from: `${req.body.details.emailSender}`,
+            // to: 'nwigweuzochukwu@yahoo.com',
+            to: `${req.body.email}`,
+            subject: `Please confirm your account`,
+            // text: `${req.body.details.emailMessage}`
+            html: `<h1>Email Confirmation</h1>
+            <h2>Hello "${req.body.name}"</h2>
+            <p>Thank you for subscribing. Please confirm your email by clicking on the following link</p>
+            <a href=http://localhost:4000/access/confirm/${token}> Click here</a>
+            </div>`
+        };
+
+        transporter.sendMail(mailOptions);
+
+      return res.status(200).json({ success: true, msg: "User was registered successfully! Please check your email",})
+    }
+
+    try {
+        sendMail();
+        // save new user
+        // send response
+    } catch (err) {
+        console.log("Failed")
+        res.status(401).json({ success: false, msg: "Couldn't send your message, kindly check your input details"})
+    }   
+        }
+
+})
+// const { token } = req.params;
+router.post('/confirm/:token', (req, res, next ) => {
+    const  token  = req.params.token;
+    console.log(token);
+    console.log("Worked here now");
+    User.findOne({
+        confirmationCode: req.params.token
+    })
+
+    .then((user) => {
+        console.log(user)
+        if (!user) {
+            return res.status(404).send({ message: "User Not found." });
+        }
+
+        user.status = "Active";
+        user.save((err) => {
+            if (err) {
+            //   res.status(500).send({ message: err });
+            res.status(500).json({ message: err })
+              return;
+            }
+            res.status(200).json({message: "Confirmed Successfully"})
+            // Redirect to the front end welcome page
+
+          });
+    })
+    .catch((e) => console.log("error", e))
+})
+
+module.exports = router;

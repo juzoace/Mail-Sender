@@ -1,19 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from 'axios';
 import './Ingredient.css';
-// import Form from 'react-bootstrap'
-// import 'bootstrap/dist/css/bootstrap.min.css';
-
 const Ingredients = () => {
   
   const initialState = {
+    emailSender: '',
     emailSubject: '',
-    emailMessage: ''
+    emailMessage: '',
+    emailPassword: ''
   }
   
   const [ details, setDetails ] = useState(initialState);
  
   const [ receivers, setReceivers ] = useState();
+
+  const [ passwordShown, setPasswordShown ] = useState(false);
+
+  const togglePasswordVisiblity = () => {
+    setPasswordShown(passwordShown ? false : true);
+  };
 
   let fileReader;
 
@@ -32,6 +37,7 @@ const Ingredients = () => {
   }
 
   const handleFileChosen = (file) => {
+    
     fileReader = new FileReader();
     
     fileReader.onloadend = handleFileRead;
@@ -40,14 +46,17 @@ const Ingredients = () => {
    
   }
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     
     let data = {details, receivers};
 
     // let data = details;
-    axios.post('http://localhost:4000/email/send', data)
-    .then(response => console.log(response));
+    // console.log("Didnt get respons.e")
+    let res = await axios.post('http://localhost:4000/email/send', data)
+    // .then(response => console.log(response));
+    console.log(res);
+    console.log("Didnt get response")
 
   }
 
@@ -63,8 +72,45 @@ const Ingredients = () => {
       <form onSubmit={onSubmit}>
 
       <div className="form-group">
-        <label for='subject'>Email Subject<span class="required">*</span></label>
+        <br></br>
+        <label for='subject'>Sender Email Address<span class="required">*</span></label>
+        <br></br>
 									<input
+                    className="form-input"
+										type='email'
+										required={true}
+										id='emailSender'
+										value={details.emailSender}
+										placeholder='Enter Email Address'
+										onChange={(e) => setDetails({...details, emailSender: e.target.value} )}
+									/>
+      </div>
+
+      <div className="form-group">
+        <br></br>
+        <label for='subject'>Email Password<span class="required">*</span></label>
+        <br></br>
+									<input
+                    className="form-input"
+                    // type='password'
+                    type= {passwordShown ? "text" : "password"}
+										required={true}
+										id='emailPassword'
+										value={details.emailPassword}
+										placeholder='Enter Email Password'
+										onChange={(e) => setDetails({...details, emailPassword: e.target.value} )}
+									/>
+                  <br></br>
+                  <a className="passwordControl" href="#" onClick={() => togglePasswordVisiblity()} > {passwordShown ? "Hide" : "Show"}</a>
+      <button  onClick={() => togglePasswordVisiblity()}>{passwordShown ? "Hide" : "Show"}</button>
+      </div>
+     
+      <div className="form-group">
+        <br></br>
+        <label for='subject'>Email Subject<span class="required">*</span></label>
+        <br></br>
+									<input
+                    className="form-input"
 										type='text'
 										required={true}
 										id='emailSubject'
@@ -74,20 +120,21 @@ const Ingredients = () => {
 									/>
       </div>
 
-      <div className="form-control">
+      <br></br>
+      <div className="form-group">
           <label for='message'>Email Message<span class="required">*</span></label>
           <div>
           <textarea cols={60} rows={30} type='text' required={true} id='emailMessage' value={details.emailMessage} onChange={(e) => setDetails({...details, emailMessage: e.target.value} )}>
             Enter Email Here
           </textarea>
           </div>
-         
+         <br></br>
 
       </div>
 
-      <div className="form-control">
-      <label for='message'>Upload .txt file<span class="required">*</span></label>
-      
+      <div className="form-group">
+      <label for='message'>Upload .txt file containing Email List<span class="required">*</span></label>
+      <br></br>
       <input
         type="file" 
         required={true}
@@ -101,15 +148,17 @@ const Ingredients = () => {
       />
       </div>
 
-      <div className="form-control">
+      <div className="form-group">
+        <br></br>
       <button
 						type="submit"
 						color="primary"
 					>
-						Add
+						Send Bulk Mail
 					</button>
       </div>
 
+        <br></br>
       </form>
       
       </section>
