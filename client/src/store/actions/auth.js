@@ -62,7 +62,18 @@ export const authCheckState = () => {
     };
 };
 
-// export const register = (registerDetails) => {
+export const errorToNull  = () => {
+    return {
+        type: actionTypes.AUTH_LOGOUT
+    }
+}
+
+export const setErrorToNull = () => {
+    return dispatch => {
+        dispatch(errorToNull)
+    }
+}
+// export const register = (reg =>isterDetails) => {
 //     console.log("Got here")
 // //    let res = await axios.post(urls.registerurl, registerDetails)
 // //     console.log(registerDetails)

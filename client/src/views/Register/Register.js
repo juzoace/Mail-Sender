@@ -1,14 +1,21 @@
 import React, { useState, useEffect }from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { connect } from "react-redux";
+// import { connect } from "react-redux";
+import { connect, useSelector, useDispatch} from 'react-redux'
 import * as actions from "../../store/actions/index"
 import "./Register.css";
 import {Alert} from "reactstrap";
+import PropTypes from "prop-types";
+const Register = ({onRegister, onSetErrorToNull}, props) => {
 
-const Register = ({onRegister}, props) => {
+  const {
+		authError
+	} = props;
 
-    const { authError } = props
+  let alertMessage = useSelector(state => state.auth.error);
+  console.log(alertMessage);
+    // const { authError } = props
     const initialState = {
         name: "",
         username: "",
@@ -21,14 +28,20 @@ const Register = ({onRegister}, props) => {
     const [ passwordShown, setPasswordShown ] = useState(false);
     const [ alerts, setAlerts ] = useState(null);
 
-    console.log(authError);
+   
     // UseEffect for unsuccessful Registration
-    useEffect(() => {
-        if (authError) {
-            console.log(authError)
-        }
-    }, [authError])
+    // useEffect(() => {
+    //   // Use a setTimeOut to dispatch action
+        
+    // }, [] )
 
+    useEffect(() => {
+      if (alertMessage) {
+        // let newBankError = "Error - Failed to add new B-ank";
+        // newBankError.split("-")
+        setAlerts({ message: alertMessage, type: "danger" })
+      }
+    }, [alertMessage])
     
 	  const TimeoutAlert = function ({ message, type }) {
 
@@ -36,6 +49,7 @@ const Register = ({onRegister}, props) => {
       function onClick() {
           clearTimeout(timer)
 
+          onSetErrorToNull();
         //   clearBankError();
 
           setAlerts(null)};
@@ -60,7 +74,18 @@ const Register = ({onRegister}, props) => {
 
     const onSubmit = (e) => {
         e.preventDefault();
-        onRegister(registerDetails)
+       onRegister(registerDetails)
+        console.log('Finished changing first AuthState Error')
+        // SetTimeOut to delay something
+        setTimeout(() => {
+          // dispatch the action
+          console.log('Dispatch to on serErrorToNull')
+          //  alertMessage = '';
+          onSetErrorToNull();
+          // console.log(alertMessage)
+        }, 5000)
+
+        // console.log(alertMessage)
         // try {
         //     let res = await axios.post("http://localhost:4000/access/register", registerDetails)
         //     console.log(res)
@@ -76,10 +101,12 @@ const Register = ({onRegister}, props) => {
                         Register
                 </div>
              </header>
-             
+             <div>
+             {alerts && <TimeoutAlert message={ alerts.message} type={ alerts.type}  />}
+             </div>
 
              <form className="form" onSubmit={onSubmit}>
-<div className="error">{alerts && <TimeoutAlert message={ alerts.message} type={ alerts.type}  />}</div>
+{/* <div className="error">{alerts && <TimeoutAlert message={ alerts.message} type={ alerts.type}  />}</div> */}
 <div className="form-group">
    <br></br> 
    <label for='subject'>Name<span class="required">*</span></label>
@@ -158,23 +185,31 @@ const Register = ({onRegister}, props) => {
     </div>
     {/* </span> */}
     </div>
-    
+
+
 </form>
         </div>
     )
 } 
 
+Register.propTypes = {
+  authError : PropTypes.string,
+}
+
 const mapStateToProps = state => {
-    return {
-        authError: state.auth.error
-    }
+    // return {
+    //     authError: state.auth.error
+    // }
 };
 
 const mapDispatchToProps = dispatch => {
     return {
        onRegister: (registerDetails) => dispatch(
            actions.register(registerDetails)
-           ) 
+           ), 
+       onSetErrorToNull: () => dispatch(
+          actions.setErrorToNull()
+       )
     };
 };
 

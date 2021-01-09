@@ -6,7 +6,6 @@ const utils = require('../lib/utils');
 const nodemailer = require('nodemailer');
 // const { token } = req.params;
 
-
 // validation
 const { registerValidation, loginValidation } = require("../validation");
 
@@ -85,7 +84,6 @@ router.post('/register', async (req, res, next ) => {
         })
         if (nameRetrieved) return
         } 
-
         if (usernameRetrieved) {
             console.log("Username Blocl")
              res.status(491).json({
@@ -96,7 +94,7 @@ router.post('/register', async (req, res, next ) => {
         if (usernameRetrieved) return
 
         if (emailRetrieved) {
-             res.json({
+             res.status(491).json({
                 type: "Error", 
                 msg: " Email taken, try a different email"
             })
