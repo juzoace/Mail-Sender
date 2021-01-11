@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as actionTypes from './actionTypes';
-import * as urls from "../../api/index"
+import * as urls from "../../api/index";
 export const authStart = () => {
     return {
         type: actionTypes.AUTH_START
@@ -19,7 +19,6 @@ export const authSuccess = (token, userId) => {
 export const authFail = (error) => {
     console.log(error)
     return {
-        
         type: actionTypes.AUTH_FAIL,
         error: error
     };
@@ -105,7 +104,8 @@ export const register = (registerDetails) => {
             console.log(res)
         } catch (error) {
             console.log(error.response)
-            dispatch(authFail(error.response.data.msg))
+            console.log(error.response.data.msg)
+            dispatch(authFail(error.response.data.msg + `-${new Date().getTime()}`))
         }
         // let res = await axios.post(urls.registerurl, registerDetails)
         // console.log(res);

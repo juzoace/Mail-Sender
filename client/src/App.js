@@ -48,12 +48,15 @@ import { connect } from 'react-redux';
 // import authActionTypes from "./actions/auth/types";
 // import * as actions from "./actions/auth/index"
 import { authenticate } from 'passport';
+import NavBar from "./components/NavBar/NavBar";
 import * as actions from "./store/actions/index";
 const Register = React.lazy(() => import("./views/Register/Register"));
 
 const Login = React.lazy(() => import("./views/Login/Login"));
 const NotFound = React.lazy(() => import("./views/NotFound/NotFound"));
 const Mailer = React.lazy(() => import ("./views/Mailer/Mailer"))
+const Welcome = React.lazy(() => import ("./views/Welcome/Welcome"))
+const PasswordReset =  React.lazy(() => import ("./views/PasswordReset/PasswordReset"))
 const loading = () => <div className='animated fadeIn pt-3 text-center'>Loading...</div>;
 
 class App extends Component {
@@ -65,9 +68,12 @@ render () {
   console.log(this.props.tokenValue)
   let routes = (
     <Suspense fallback={loading()}>
+    <NavBar />
     <Switch>
        <Route exact path='/register' component={Register}/>
        <Route exact path='/login' name='Login' component={Login}/>
+       <Route exact path='/reset' name='Reset Password' component={PasswordReset}/>
+       <Route exact path='/' name='Welcome' component={Welcome}/>
        <Redirect to="/login" />
        <Route exact path='/*' name='' component={NotFound}/>
     </Switch>

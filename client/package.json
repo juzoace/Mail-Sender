@@ -5,6 +5,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
+    "bulma": "^0.9.1",
     "core-js": "^4.0.0",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",

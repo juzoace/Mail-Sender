@@ -161,7 +161,7 @@ const togglePasswordVisiblity = () => {
                 <Link className="register" to="/register">Need a new account?</Link>
                 </div>
                 <div className="reset-account">
-                <Link className="reset-password" to="/password-reset">Forgot Password?</Link>
+                <Link className="reset-password" to="/reset">Forgot Password?</Link>
                 </div>
                 {/* </span> */}
                 </div>

@@ -1,0 +1,200 @@
+*,
+*::after,
+*::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit
+}
+
+html {
+    font-size: 62.5%;
+}
+
+label {
+    font-size: 1.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+body {
+    font-family: "Lato", sans-serif;
+    font-weight: 400;
+    line-height: 2.0;
+    box-sizing: border-box
+}
+.header {
+    width: 100%;
+    background-color: #f02d78;
+    color: white;
+    font-size: 3rem;
+    text-align: center;
+    padding: 0.2rem 0;
+    box-sizing: border-box;
+    text-transform: uppercase;
+}
+
+.form-input {
+  width: 50%;
+  text-align: center;
+  padding: 1.3rem 2rem;
+  margin: 0.9rem 0;
+  display: inline-block;
+  border: 0.1rem solid #ccc;
+  border-radius: 0.4rem;
+  box-sizing: border-box;
+}
+
+.form {
+    /* box-shadow: 0 1rem 2rem rgba(0,0,0,.2); */
+    margin: 6.5rem;
+    background-color: rgb(228, 220, 220);
+    border-radius: 3rem;
+}
+
+.form-group {
+    text-align: center;
+    position: relative
+}
+
+textarea {
+    width: 50%;
+}
+
+.passwordControl {
+    text-decoration: none;
+    color: black;
+    border: 1rem;
+}
+
+.form-buttons {
+    text-align: center;
+    position: relative
+}
+
+/* .create-account {
+    position: absolute;
+    left: 8rem;
+} */
+
+.required {
+    color: red
+}
+
+button {
+    margin-top: 4rem;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    background-color: #F02D78;
+}
+
+button:hover {
+    transform: translateY(-0.3rem);
+    box-shadow: 0 1rem 2rem rgba(0,0,0,.2); 
+    text-transform: uppercase;
+}
+
+button:active {
+    transform: translateY(-.1rem)
+}
+
+.toggle1:link,
+.toggle1:visited {
+    position: absolute;
+    left: 40rem;
+    top: 6.9rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    background-color: #F02D78;
+    color: white;
+    padding: 0.5rem 3rem;
+    font-size: 1.2rem;;
+    border-radius: .5rem;
+}
+
+.toggle1:hover {
+    transform: translateY(-0.3rem);
+    box-shadow: 0 1rem 2rem rgba(0,0,0,.2);
+}
+
+.toggle1:active {
+    transform: translateY(-.1rem)
+}
+
+.toggle2:link,
+.toggle2:visited {
+    position: absolute;
+    left: 45rem;
+    top: 6.9rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    background-color: #F02D78;
+    color: white;
+    padding: 0.5rem 3rem;
+    font-size: 1.2rem;;
+    border-radius: .5rem;
+}
+
+
+.toggle2:hover {
+    transform: translateY(-0.3rem);
+    box-shadow: 0 1rem 2rem rgba(0,0,0,.2);
+}
+
+.toggle2:active {
+    transform: translateY(-.1rem)
+}
+
+.create-account {
+    position: relative;
+    top: 6rem;
+    left: 29rem;
+}
+
+.register:link,
+.register:visited {
+    color: rgb(207, 178, 178);
+    text-decoration: none;
+    text-transform: uppercase;
+    background-color: #F02D78;
+    color: white;
+    padding: 0.8rem 3rem;
+    font-size: 1.2rem;;
+    border-radius: .5rem;
+}
+
+.register:hover {
+    transform: translateY(-0.5rem) !important;
+    box-shadow: 0 1rem 2rem rgba(0,0,0,.2) ;
+}
+
+.register:active {
+    transform: translateY(-.1rem)
+}
+
+
+.reset-account {
+    position: relative;
+    top: 6rem;
+    right: 5rem;
+}
+
+.reset-password:link,
+.reset-password:visited {
+    color: rgb(207, 178, 178);
+    text-decoration: none;
+    text-transform: uppercase;
+    background-color: #F02D78;
+    color: white;
+    padding: 0.8rem 3rem;
+    font-size: 1.2rem;;
+    border-radius: .5rem;
+}
+
+.reset-password:hover {
+    transform: translateY(-0.5rem) !important;
+    box-shadow: 0 1rem 2rem rgba(0,0,0,.2) ;
+}
+
+.reset-password:active {
+    transform: translateY(-.1rem)
+}
