@@ -1,11 +1,10 @@
 import React, { useState, useEffect }from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
-// import { connect } from "react-redux";
-import { connect, useSelector, useDispatch} from 'react-redux'
+import { connect, useSelector } from 'react-redux'
 import * as actions from "../../store/actions/index"
 import "./Register.css";
 import {Alert} from "reactstrap";
+import { useHistory } from 'react-router-dom';
 import PropTypes from "prop-types";
 const Register = ({onRegister, onSetErrorToNull}, props) => {
 
@@ -14,8 +13,8 @@ const Register = ({onRegister, onSetErrorToNull}, props) => {
 	} = props;
 
   let alertMessage = useSelector(state => state.auth.error);
-  console.log(alertMessage);
-    // const { authError } = props
+  let successAlertMessage = useSelector(state => state.auth.registerSuccess);
+
     const initialState = {
         name: "",
         username: "",
@@ -23,10 +22,18 @@ const Register = ({onRegister, onSetErrorToNull}, props) => {
         password: "",
     }
 
-
     const [ registerDetails, setRegisterDetails ] = useState(initialState);
     const [ passwordShown, setPasswordShown ] = useState(false);
     const [ alerts, setAlerts ] = useState(null);
+    const history = useHistory();
+    
+    useEffect(() => {
+      console.log(alertMessage);
+      if (alertMessage === null) {
+        let  successAlertMessage = "Kindly Fill in the Form,";
+        setAlerts({message: successAlertMessage, type: "success"})  
+      }
+    }, [])
 
     useEffect(() => {
       if (alertMessage) {
@@ -34,6 +41,15 @@ const Register = ({onRegister, onSetErrorToNull}, props) => {
       }
     }, [alertMessage])
     
+    useEffect(() => {
+      if (successAlertMessage) {
+        
+        let  successAlertMessage = "Registration successfully, kindly check your mailbox to confirm your registration";
+        setAlerts({ message: successAlertMessage, type: "success" })
+      }
+    }, [successAlertMessage])
+    
+
 	  const TimeoutAlert = function ({ message, type }) {
 
         const timer = setTimeout(onClick, 3000);
@@ -43,7 +59,7 @@ const Register = ({onRegister, onSetErrorToNull}, props) => {
           onSetErrorToNull();
     
           setAlerts(null)};
-
+     
       return (
         <div>
           <Alert  color={type} onClick={onClick} variant={type}>
@@ -56,7 +72,7 @@ const Register = ({onRegister, onSetErrorToNull}, props) => {
     const togglePasswordVisiblity = () => {
         setPasswordShown(passwordShown ? false : true);
       };
-
+    
     const onSubmit = (e) => {
 
         e.preventDefault();
@@ -66,11 +82,17 @@ const Register = ({onRegister, onSetErrorToNull}, props) => {
         setTimeout(() => {
          
           onSetErrorToNull();
-          console.log(alertMessage)
+         
         }, 3000)
 
-
-        // this.props.history.push('/checkout');
+        console.log(successAlertMessage)
+        if (successAlertMessage === null ) {
+          console.log("Got here");
+          setTimeout(() => {
+            history.push('/login');
+          }, 5000)
+          
+        }
 
     }  
     return (
@@ -164,9 +186,7 @@ const Register = ({onRegister, onSetErrorToNull}, props) => {
                 </div>
                
               </div>
-
-
-</form>
+            </form>
         </div>
     )
 } 
@@ -176,9 +196,7 @@ Register.propTypes = {
 }
 
 const mapStateToProps = state => {
-    // return {
-    //     authError: state.auth.error
-    // }
+
 };
 
 const mapDispatchToProps = dispatch => {

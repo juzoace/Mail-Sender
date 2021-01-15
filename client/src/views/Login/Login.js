@@ -1,61 +1,86 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import {useSelector, useDispatch } from 'react-redux';
-// Import the action 
-// import { loginUser } from "../../actions/auth";
+import { connect, useSelector, useDispatch } from 'react-redux';
 import PropTypes from "prop-types";
-import axios from "axios"
-// import authActionTypes from "../../actions/auth/types";
+import {Alert} from "reactstrap";
+import * as actions from "../../store/actions/index"
 import "./Login.css";
-const Login = ({setToken, loginUser}) => {
+const Login = ({onLogin,setToken, loginUser, onSetLoginErrorToNull}) => {
 
 const dispatch = useDispatch()    
+let formDetails = useSelector(state => state.auth.loginFormDetails)
 
 const initialState = {
     name: "",
     username: "",
     email: "",
     password: "",
-    // confirm_password: ""
 }
 
-// const loginRequest = async () => {
-
-// } 
-
+let failureAlertMessage = useSelector(state => state.auth.loginError);
+// let successAlertMessage = useSelector(state => state.auth.)
 const [ loginDetails, setLoginDetails ] = useState(initialState);
 const [ passwordShown, setPasswordShown ] = useState(false);
-// const [ confirmPasswordShown, setConfirmPasswordShown ] = useState(false);
-const loginObject = useSelector(state => state.loginReducer)
+const [ alerts, setAlerts ] = useState(null);
+
 const togglePasswordVisiblity = () => {
   setPasswordShown(passwordShown ? false : true);
 };
-// const toggleConfirmPasswordVisiblity = () => {
-//   setConfirmPasswordShown(confirmPasswordShown ? false : true);
-// };
 
+    // useEffect(() => {
+    //     // Set the form details to the stuff
+    //     if ( formDetails!== null) {
+    //         console.log(formDetails);
+    //         setLoginDetails({...loginDetails, username: formDetails.registeredUserName, name: formDetails.registeredName, email: formDetails.registeredEmail }) 
+    //     }
+    // }, [])
+
+    // ComponentDidMount
+    useEffect(() => {
+        console.log(failureAlertMessage)
+    }, [])
+
+    useEffect(() => {
+        if (failureAlertMessage) {
+          setAlerts({ message: failureAlertMessage.split("-")[0], type: "danger" })
+        }
+      }, [failureAlertMessage])
+
+    // useEffect(() => {
+    //     if (successAlertMessage) {
+          
+    //       let  successAlertMessage = "Registration successfully, kindly check your mailbox to confirm your registration";
+    //       setAlerts({ message: successAlertMessage, type: "success" })
+    //     }
+    //   }, [successAlertMessage])
+
+    const TimeoutAlert = function ({ message, type }) {
+
+        const timer = setTimeout(onClick, 3000);
+        
+        function onClick() {
+          clearTimeout(timer)
+
+          onSetLoginErrorToNull()
+    
+          setAlerts(null)};
+     
+      return (
+        <div>
+          <Alert  color={type} onClick={onClick} variant={type}>
+            {message}
+          </Alert>
+        </div>
+      )
+    }
+
+// Toggle Password Visibility
 
     const onSubmit = async (e) => {
+        
         e.preventDefault();
-    // try {
-    //     let res = await axios.post("http://localhost:4000/access/login", loginDetails)
-    //     console.log(res.data.token);
-    //     console.log(res.data);
-    //     // setToken(res.data.token);
-    //     const { data : payload} = res
-    //     console.log(payload);
-    //     dispatch({
-    //         type: authActionTypes.loginUser,
-    //         payload
-    //     })
-    //     const expirationDate = new Date(new Date().getTime() + res.data.expiresIn * 1000);
-    //     localStorage.setItem('token', res.data.token)
-    //     localStorage.setItem('expirationDate', expirationDate);
-    //     localStorage.setItem('userId', res.data.user._id);
-    //     // Dispatch 
-    // } catch (error) {
 
-    // }
+        onLogin(loginDetails)
     }
 
     return (
@@ -67,6 +92,9 @@ const togglePasswordVisiblity = () => {
                 </div> 
             </header>
 
+            <div>
+             {alerts && <TimeoutAlert message={ alerts.message} type={ alerts.type}  />}
+             </div>
          
             <form className="form" onSubmit={onSubmit}>
 
@@ -112,9 +140,8 @@ const togglePasswordVisiblity = () => {
                 placeholder="Enter Email"
                 onChange={(e) => setLoginDetails({...loginDetails, email: e.target.value })}
                />
-                </div>
+            </div>
 
-                
                <div className="form-group">
                <br></br> 
                <label for='subject'>Password<span class="required">*</span></label>
@@ -129,25 +156,9 @@ const togglePasswordVisiblity = () => {
                 onChange = {(e) => setLoginDetails({...loginDetails, password: e.target.value })}
                />
                <a href="#" className="toggle1" onClick={() => togglePasswordVisiblity()}>{passwordShown ? "Hide" : "Show"}</a>
-               </div>
+            </div>
 
-               {/* <div className="form-group">
-               <br></br> 
-               <label for='subject'>Confirm Password<span class="required">*</span></label>
-               <br></br>
-               <input
-                className ="form-input"
-                type = {confirmPasswordShown ? "text" : "password"}
-                // type= "password"
-                required = {true}
-                id = "password"
-                value = {loginDetails.confirm_password}
-                placeholder = "Re-type Password"
-                onChange = {(e) => setLoginDetails({...loginDetails, confirm_password: e.target.value })}
-               />
-               <a href="#" className="toggle2"  onClick={() => toggleConfirmPasswordVisiblity()}>{confirmPasswordShown ? "Hide" : "Show"}</a>
-               </div> */}
-                <div className="form-buttons">
+            <div className="form-buttons">
                 
                 <div className="login">
                 <button
@@ -163,8 +174,7 @@ const togglePasswordVisiblity = () => {
                 <div className="reset-account">
                 <Link className="reset-password" to="/reset">Forgot Password?</Link>
                 </div>
-                {/* </span> */}
-                </div>
+            </div>
                 
             </form>
         </div>
@@ -173,8 +183,22 @@ const togglePasswordVisiblity = () => {
 };
 
 Login.propTypes = {
-    // setToken: PropTypes.func.isRequired,
     loginUser: PropTypes.func.isRequired
 }
 
-export default Login;
+const mapStateToProps = state => {
+
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onLogin: (loginDetails) => dispatch(
+            actions.login(loginDetails)
+        ),
+        onSetLoginErrorToNull: () => dispatch(
+            actions.setLoginErrorToNull()
+        )
+    };
+};
+
+export default connect( mapStateToProps, mapDispatchToProps )( Login );

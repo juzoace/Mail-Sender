@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as actionTypes from './actionTypes';
 import * as urls from "../../api/index";
+
 export const authStart = () => {
     return {
         type: actionTypes.AUTH_START
@@ -15,9 +16,21 @@ export const authSuccess = (token, userId) => {
     };
 };
 
+export const authRegisterSuccess = (success) => {
+    return {
+        type: actionTypes.AUTH_REGISTER_SUCCESS,
+        success: success
+    }
+};
+
+export const authLoginPage = (loginFormDetails) => {
+    return {
+        type: actionTypes.AUTH_LOGIN_PAGE,
+        loginFormDetails: loginFormDetails
+    }
+}
 
 export const authFail = (error) => {
-    console.log(error)
     return {
         type: actionTypes.AUTH_FAIL,
         error: error
@@ -43,9 +56,9 @@ export const checkAuthTimeout = (expirationTime) => {
 
 export const authCheckState = () => {
     return dispatch => {
+
         const token = localStorage.getItem('token');
-        console.log(token)
-        console.log("Got here")
+    
         if (!token) {
             dispatch(logout());
         } else {
@@ -72,59 +85,71 @@ export const setErrorToNull = () => {
         dispatch(errorToNull)
     }
 }
-// export const register = (reg =>isterDetails) => {
-//     console.log("Got here")
-// //    let res = await axios.post(urls.registerurl, registerDetails)
-// //     console.log(registerDetails)
-//     return dispatch => {
-//         dispatch(authStart());
-//         axios.post(urls.registerurl, registerDetails)
-//         .then(res => {
-//             console.log(res)
-//             const expirationDate = new Date(new Date().getTime() + res.data.expiresIn * 1000);
-        
-//         })
-//         .catch(err => {
-//             console.log(err)
-//             console.log("After line 68")
-//             // dispatch(authFail(err.msg));
-//         })
-//         // .then(res => {
-//         //    console.log(res) 
-//         // })
-//     }
-// }
 
 export const register = (registerDetails) => {
    
     return async dispatch => {
         console.log("Got here frontend dispatch block")
         try {
-            let res = await axios.post(urls.registerurl, registerDetails)
-            console.log(res)
+            let response = await axios.post(urls.registerurl, registerDetails)
+            console.log(response)
+            
+            if (response.data.success = true) {
+                dispatch(authRegisterSuccess(response.data.msg))
+                dispatch(authLoginPage(response.data.user))
+            }
+
         } catch (error) {
-            console.log(error.response)
-            console.log(error.response.data.msg)
+            console.log(error)
             dispatch(authFail(error.response.data.msg + `-${new Date().getTime()}`))
         }
-        // let res = await axios.post(urls.registerurl, registerDetails)
-        // console.log(res);
-
-        // Error handling to display data to front End
-        // if (res.data.type === "Error") {
-        //     dispatch(authFail(res.data.msg))
-        //     console.log(res.data.msg)
-        // } 
-
-
-        // Successful Registration
 
     }
 }
 
-// export const authFail = (error) => {
-//     return {
-//         type: actionTypes.AUTH_FAIL,
-//         error: error
-//     };
-// };
+export const LoginErrorToNull = () => {
+    return dispatch => {
+        dispatch(LoginErrorToNull)
+    }
+}
+
+export const login = (loginDetails) => {
+    return async dispatch => {
+        try {
+            let response = await axios.post(urls.loginurl, loginDetails)
+            console.log(response);
+            if (response.data.success = true) {
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('expirationDate', response.data.expiresIn );
+                localStorage.setItem('userId', response.data._id); 
+                dispatch(authLoginSuccess(response.data.token, response.data._id))
+                dispatch(checkAuthTimeout(response.data.expiresIn));
+                
+            }
+        } catch (error) {
+            console.log(error.response.data.msg)
+            dispatch(loginFail(error.response.data.msg + `-${new Date().getTime()}`))
+        }
+    }
+}
+
+export const authLoginSuccess = (token, _id) => {
+    return {
+        type: actionTypes.AUTH_LOGIN_SUCCESS,
+        token: token,
+        _id: _id
+    }
+}
+
+export const loginFail = (loginError) => {
+    return {
+        type: actionTypes.AUTH_LOGIN_FAIL,
+        loginError: loginError
+    }
+}
+
+export const setLoginErrorToNull = () => {
+    return dispatch => {
+        dispatch(LoginErrorToNull)
+    }
+}

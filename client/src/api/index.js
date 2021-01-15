@@ -9,3 +9,4 @@
 // export default auth;
 
 export const registerurl = 'http://localhost:4000/access/register';
+export const loginurl = 'http://localhost:4000/access/login';

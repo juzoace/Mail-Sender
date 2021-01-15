@@ -7,10 +7,10 @@ const nodemailer = require('nodemailer');
 // const { token } = req.params;
 
 // validation
-const { registerValidation, loginValidation } = require("../validation");
+// const { registerValidation, loginValidation } = require("../validation");
 
 router.post('/login', (req, res, next ) => {
-
+    
     console.log(req.body);
     User.findOne({ username: req.body.username})
         .then((user) => {
@@ -18,11 +18,10 @@ router.post('/login', (req, res, next ) => {
                 res.status(401).json({ success: false, msg: "Could not find user" })
             }
 
-            
             if (user.status != "Active") {
-                // Redirect to login page  
+                  
                 return res.status(401).send({
-                    message: "Pending Account. Please Verify Your Email!",
+                    msg: "Kindly verify your account. Click the activation link that was sent to your email  !",
                   });
 
             } else {
@@ -40,10 +39,7 @@ router.post('/login', (req, res, next ) => {
                 res.status(401).json({ success: false, msg: "You entered the wrong password"})
             
             }
-
             }
-
-            
         })
         .catch((err) => {
             next(err);
@@ -51,17 +47,9 @@ router.post('/login', (req, res, next ) => {
 })
 
 router.post('/register', async (req, res, next ) => {
-
+    // req.body.email
+    console.log(req.body.email)
     console.log("Got here")
-    
-    // if (req.body.password === req.body.confirm_password) {
-        
-         // validate the user
-        // const { error } = registerValidation(req.body);
-
-        // throw validation errors
-        // if (error) return res.status(400).json({ error: error.details[0].message });
-
         // Name database check
         const nameRetrieved = await User.findOne({ name: req.body.name });
         // Send the response here 
@@ -85,7 +73,7 @@ router.post('/register', async (req, res, next ) => {
         if (nameRetrieved) return
         } 
         if (usernameRetrieved) {
-            console.log("Username Blocl")
+            console.log("Username Block")
              res.status(491).json({
                 type: "Error", 
                 msg: "Username taken, try a different username "
@@ -102,7 +90,7 @@ router.post('/register', async (req, res, next ) => {
 
         if (nameRetrieved && usernameRetrieved) {
             // Tell the user to check the name and username input fields
-             res.json({
+             res.status(491).json({
                 type: "Error",
                 msg: "Change your name and username`"
             })
@@ -111,7 +99,7 @@ router.post('/register', async (req, res, next ) => {
 
         if (nameRetrieved && emailRetrieved) {
             // Tell the user to check the name and email input fields
-            res.json({
+            res.status(491).json({
                 type: "Error",
                 msg: "Change your Name and Email"
             })
@@ -120,7 +108,7 @@ router.post('/register', async (req, res, next ) => {
 
         if (usernameRetrieved && emailRetrieved) {
             // Tell the user to check the username and email input fields
-            res.json({
+            res.status(491).json({
                 type: "Error",
                 msg: "Change your Username and Email"
             })
@@ -129,7 +117,7 @@ router.post('/register', async (req, res, next ) => {
 
         if (nameRetrieved && usernameRetrieved && emailRetrieved) {
             // Tell the user to check the name, username and email input fields
-            res.json({
+            res.status(491).json({
                 type: "Error",
                 msg: "Change your Name, Username and Email" 
             })
@@ -163,13 +151,8 @@ router.post('/register', async (req, res, next ) => {
 
             newUser.save()
             .then((user) => {
-                // const jwt = utils.issueJWT(user);
-
-                // res.json({ success: true, user: user, token: jwt.token, expiresIn: jwt.expires})
+           
             })
-
-
-            // Send Mail Configuration 
             
         const sendMail = () => {
 
@@ -199,11 +182,14 @@ router.post('/register', async (req, res, next ) => {
 
         transporter.sendMail(mailOptions);
 
-      return res.status(200).json({ success: true, msg: "User was registered successfully! Please check your email",})
+      return res.status(200).json({ success: true, msg: "User was registered successfully! Please check your email", user: {
+          registeredName: req.body.name, registeredEmail: req.body.email, registeredUserName: req.body.username
+      }})
     }
 
     try {
         sendMail();
+        console.log('Got to the try block')
         // save new user
         // send response
     } catch (err) {

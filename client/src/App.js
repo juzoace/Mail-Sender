@@ -77,11 +77,10 @@ render () {
        <Redirect to="/login" />
        <Route exact path='/*' name='' component={NotFound}/>
     </Switch>
-    </Suspense>
+    </Suspense>    
   );
 
   if ( this.props.isAuthenticated ) {
-    // console.log(this.props.isAuthenticated);
     console.log("Here")
     routes = (
       <Suspense fallback={loading()}>
@@ -106,8 +105,6 @@ render () {
   return {
     isAuthenticated: state.auth.token !== null,
     tokenValue: state.auth.token
-    // isAuthenticated:null
-    // isAuthenticated: state.auth.token
   };
 };
 
