@@ -21,6 +21,7 @@ const authRegisterSuccess = (state, action ) => {
     return updateObject(
          state, { registerSuccess: action.success, loading: true } );
 }
+
 const authSuccess = (state, action) => {
     return updateObject( state, { 
         token: action.idToken,

@@ -126,9 +126,17 @@ export const login = (loginDetails) => {
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('expirationDate', expirationDate );
                 localStorage.setItem('_id', response.data.user._id); 
+                
+                // Delay the authentication stuff
+               
+                setTimeout(() => {
+                     console.log('set time ut')
                 setAuthToken(response.data.token);
                 dispatch(authLoginSuccess(response.data.token, response.data.user._id))
                 dispatch(checkAuthTimeout(response.data.expiresIn));
+                }, 5000)
+                
+                 
             }
         } catch (error) {
             console.log(error.response.data.msg)

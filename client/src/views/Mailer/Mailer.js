@@ -6,22 +6,10 @@ import PropTypes from "prop-types";
 import "./Mailer.css"
 // import { Link } from "react-router-dom";
 const Mailer = (props) => {
-  
-  // const initialCall = () => {
-  //   const activeUser = useSelector(state => state.successLoginResponse )
-  //   console.log(activeUser);
-  // }
 
-  // useEffect(() => {
-  //  initialCall()
-  // }, [])
   const {
     successLoginResponse
   } = props
-
-  // useEffect(() => {
-
-  // }, [])
  
   const initialState = {
     emailSender: '',
@@ -71,8 +59,6 @@ const Mailer = (props) => {
     
     let data = {details, receivers};
 
-    // let data = details;
-    // console.log("Didnt get respons.e")
     let res = await axios.post('http://localhost:4000/email/send', data)
     // .then(response => console.log(response));
     console.log(res);

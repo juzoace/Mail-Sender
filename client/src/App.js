@@ -16,44 +16,8 @@ const loading = () => <div className='animated fadeIn pt-3 text-center'>Loading.
 
 class App extends Component {
   componentDidMount () {
-    // console.log('Tried here')
-    // console.log(this.props.tokenValue)
-    // console.log(this.props.onTryAutoSignup())
+   
     this.props.onTryAutoSignup(); 
-
-  //   // Try to do the sign up here
-  //   const token = localStorage.getItem('token');
-  //   const _id = localStorage.getItem('_id')
-  //   console.log(token);
-
-
-  //   if (!token) {
-  //     // dispatch(logout());
-  //     // Try to logOut
-  //     this.props.onLogOut();
-
-  // } else {
-  //     const expirationDate = new Date(localStorage.getItem('expirationDate'));
-  //     console.log(expirationDate);
-  //     console.log(new Date())
-  //     if (expirationDate <= new Date()) {
-  //         // dispatch(logout());
-  //         // Try to logOut
-  //         console.log('Got here');
-  //         this.props.onLogOut();
-  //     } else {
-  //       console.log(expirationDate);
-  //         setAuthToken(token);
-  //         const _id = localStorage.getItem('_id');
-  //         // dispatch(authSuccess(token, _id));
-  //         // Try to dispatch the authSuccess action
-  //         this.props.onAuthSuccess(token, _id)
-  //         // dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000 ));
-  //         // Try to dispatch checkTimeOut Action 
-  //         // const expirationDate = new Date(localStorage.getItem('expirationDate'));
-  //         this.props.onCheckTimeOut()
-  //       }   
-  // }
  }
 
 render () {
@@ -71,17 +35,17 @@ render () {
     </Switch>
     </Suspense>    
   );
-console.log(this.props.isAuthenticated)
+// console.log(this.props.isAuthenticated);
   if ( this.props.isAuthenticated ) {
     console.log("Here")
     routes = (
       <Suspense fallback={loading()}>
       <Switch>
-        <Route path='/' name='Mailer' component={Mailer} />
-        <Redirect to="/" />
+        <Route path='/mailer' name='Mailer' component={Mailer} />
+        <Redirect to="/mailer" />
       </Switch>
       </Suspense>
-    );
+    );     
   }
 
   return (

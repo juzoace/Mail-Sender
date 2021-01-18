@@ -32,7 +32,7 @@ router.post('/login', (req, res, next ) => {
             if(isValid) { 
                 const tokenObject = utils.issueJWT(user);
                 
-                res.status(200).json({ success: true, user: user, token: tokenObject.token, expiresIn: "3600"})
+                res.status(200).json({ success: true, msg: "Login Successful", user: user, token: tokenObject.token, expiresIn: "3600"})
             
             } else {
             
