@@ -18,7 +18,6 @@ const initialState = {
 }
 
 let failureAlertMessage = useSelector(state => state.auth.loginError);
-// let successAlertMessage = useSelector(state => state.auth.)
 const [ loginDetails, setLoginDetails ] = useState(initialState);
 const [ passwordShown, setPasswordShown ] = useState(false);
 const [ alerts, setAlerts ] = useState(null);
@@ -27,15 +26,6 @@ const togglePasswordVisiblity = () => {
   setPasswordShown(passwordShown ? false : true);
 };
 
-    // useEffect(() => {
-    //     // Set the form details to the stuff
-    //     if ( formDetails!== null) {
-    //         console.log(formDetails);
-    //         setLoginDetails({...loginDetails, username: formDetails.registeredUserName, name: formDetails.registeredName, email: formDetails.registeredEmail }) 
-    //     }
-    // }, [])
-
-    // ComponentDidMount
     useEffect(() => {
         console.log(failureAlertMessage)
     }, [])

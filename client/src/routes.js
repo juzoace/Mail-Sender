@@ -1,33 +1,4 @@
-// import React from 'react';
-// import {Route, BrowserRouter as Router, Switch, Redirect} from "react-router-dom";
 
-// import Login from "./views/Login/Login";
-// import Register from "./views/Register/Register";
-// import NotFound from "./views/NotFound/NotFound";
-// import Mailer from "./views/Mailer/Mailer";
-
-// const Routes = (props) => (
-//     <Router {...props}>
-//       <Switch>
-//         <Route path="/login">
-//           <Login />
-//         </Route>
-//         <Route path="/register">
-//           <Register />
-//         </Route>
-//         <Route path="/dashboard">
-//           <Mailer />
-//         </Route>
-//         <Route exact path="/">
-//           <Redirect to="/dashboard" />
-//         </Route>
-//         <Route path="*">
-//           <NotFound />
-//         </Route>
-//       </Switch>
-//     </Router>
-//   );
-//   export default Routes;
   
 import React from "react"
 const Login = React.lazy(() => import("./views/Login/Login"))

@@ -21,8 +21,13 @@ const authRegisterSuccess = (state, action ) => {
     return updateObject(
          state, { registerSuccess: action.success, loading: true } );
 }
-const authSuccess = () => {
-
+const authSuccess = (state, action) => {
+    return updateObject( state, { 
+        token: action.idToken,
+        _id: action._id,
+        error: null,
+        loading: false
+     } );
 }
 
 const authLoginPage = (state, action ) => {
@@ -47,8 +52,8 @@ const authErrorChange = (state, action) => {
     });
 }
 
-const authLogout = () => {
-
+const authLogout = (state, action) => {
+    return updateObject(state, { token: null, _id: null });
 }
  
 const authLoginFail = (state, action) => {
