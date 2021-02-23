@@ -38,6 +38,7 @@ export const authFail = (error) => {
 }
 
 export const logout = () => {
+    console.log("Got here")
     localStorage.removeItem('token');
     localStorage.removeItem('expirationDate');
     localStorage.removeItem('_id');
@@ -45,6 +46,12 @@ export const logout = () => {
         type: actionTypes.AUTH_LOGOUT
     };
 };
+
+export const authsignout = () => {
+    return dispatch => {
+        dispatch(logout());
+    }
+}
 
 export const checkAuthTimeout = (expirationTime) => {
     return dispatch => {
@@ -55,7 +62,7 @@ export const checkAuthTimeout = (expirationTime) => {
 };
 
 export const authCheckState = () => {
-    console.log('Got to the authCheck Block')
+    console.log('Got to the authCheck kk Block')
     return dispatch => {
         console.log('Got to the authCheck Block')
         const token = localStorage.getItem('token');
@@ -63,11 +70,12 @@ export const authCheckState = () => {
         if (!token) {
             dispatch(logout());
         } else {
+            console.log(token);
             const expirationDate = new Date(localStorage.getItem('expirationDate'));
             if (expirationDate <= new Date()) {
                 dispatch(logout());
             } else {
-                setAuthToken(token);
+                // setAuthToken(token);
                 const _id = localStorage.getItem('_id');
                 dispatch(authSuccess(token, _id));
                 dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000 ));
@@ -128,7 +136,10 @@ export const login = (loginDetails) => {
                 localStorage.setItem('_id', response.data.user._id); 
                 
                 // Delay the authentication stuff
-               
+               console.log("got here first")
+                
+               dispatch(authLoginSuccessAlert(response.data.msg)) 
+
                 setTimeout(() => {
                      console.log('set time ut')
                 setAuthToken(response.data.token);
@@ -145,13 +156,23 @@ export const login = (loginDetails) => {
     }
 }
 
-export const authLoginSuccess = (token, _id) => {
+export const authLoginSuccess = (token, _id, msg) => {
     return {
         type: actionTypes.AUTH_LOGIN_SUCCESS,
         token: token,
-        _id: _id
+        _id: _id, 
+        msg: msg
+
     }
 }
+
+export const authLoginSuccessAlert = (msg) => {
+    return {
+        type: actionTypes.AUTH_LOGIN_SUCCESS_ALERT,
+        msg: msg
+    }
+}
+
 
 export const loginFail = (loginError) => {
     return {

@@ -16,12 +16,13 @@ const loading = () => <div className='animated fadeIn pt-3 text-center'>Loading.
 
 class App extends Component {
   componentDidMount () {
-   
+   console.log('Try am')
     this.props.onTryAutoSignup(); 
  }
 
 render () {
   console.log(this.props.tokenValue)
+  console.log('hey man')
   let routes = (
     <Suspense fallback={loading()}>
     <NavBar />
@@ -37,7 +38,7 @@ render () {
   );
 // console.log(this.props.isAuthenticated);
   if ( this.props.isAuthenticated ) {
-    console.log("Here")
+    console.log("Here");
     routes = (
       <Suspense fallback={loading()}>
       <Switch>
@@ -68,13 +69,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onTryAutoSignup: () => dispatch( actions.authCheckState()),
-    // onAuthSuccess: () => dispatch( actions.authSuccess()),
-    // onCheckTimeOut:() => dispatch({
-    //   type: actions.checkAuthTimeout()
-    // }),
-    // onLogOut: () => dispatch({
-    //   type: actions.logout()
-    // })
   };
 };
 

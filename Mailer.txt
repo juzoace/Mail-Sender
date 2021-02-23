@@ -1,0 +1,4 @@
+Mailer client Id for google console: 407712680970-u38npeovdhvdggefv4d8fnoc7kf46rod.apps.googleusercontent.com
+Client secret: 6f0LhaRSmgRN3Nzkq9d5rMjV
+Authorization code 4/0AY0e-g7Sr5DumZ6OsAqCWoYk0P3dJnlD8KEsWGLpEUc8PQ2D4FPtN6w2AUPcgZ4ju_F2Cg
+"refresh_token": "1//04TTY9Fvp2vx3CgYIARAAGAQSNwF-L9IrRpU6SR7wrx6q3ZBFM2kFICuQsTtjD9abUwZyPyWzyaaJr2nx_pvGLRt3uJIqRk9eWMw"

@@ -10,7 +10,8 @@ const initialState = {
     success: null,
     registerSuccess: null,
     loginFormDetails: null,
-    loginError: null
+    loginError: null,
+    loginSuccess: null
 }
 
 const authStart = (state, action) => {
@@ -67,6 +68,13 @@ const authLoginSuccessful = (state, action) => {
     return updateObject(state, {
         token: action.token,
         _id: action._id
+        
+    })
+}
+
+const authLoginSuccessAlert = (state, action) => {
+    return updateObject(state, {
+        loginSuccess: action.msg
     })
 }
 
@@ -81,6 +89,7 @@ const reducer = (state = initialState, action ) => {
         case actionTypes.AUTH_LOGIN_PAGE: return authLoginPage(state, action);
         case actionTypes.AUTH_LOGIN_FAIL: return authLoginFail(state, action);
         case actionTypes.AUTH_LOGIN_SUCCESS: return authLoginSuccessful(state, action);
+        case actionTypes.AUTH_LOGIN_SUCCESS_ALERT: return authLoginSuccessAlert(state, action);
         default: 
         return state;
     }

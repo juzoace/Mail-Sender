@@ -43,6 +43,7 @@ app.use(cors());
 // Bring in the Users route
 app.use(require('./routes'));
 
+
 // app.get('*', (req, res) => {
 //     res.sendFile(path.join(__dirname, 'public/index.html'));
 // })

@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import { useSelector, connect } from "react-redux";
+import { useSelector, connect, useDispatch } from "react-redux";
 import PropTypes from "prop-types";
-// import './Ingredient.css';
 import "./Mailer.css"
-// import { Link } from "react-router-dom";
-const Mailer = (props) => {
+import * as actions from "../../store/actions/index"
+import { Button } from "reactstrap";
+
+const Mailer = ( props) => {
+
+  const dispatch = useDispatch(); 
 
   const {
     successLoginResponse
@@ -23,6 +26,11 @@ const Mailer = (props) => {
   const [ receivers, setReceivers ] = useState();
 
   const [ passwordShown, setPasswordShown ] = useState(false);
+
+  const handleLogout = () => {
+    console.log("Got here")
+    props.onLogout();
+  }
 
   const togglePasswordVisiblity = () => {
     setPasswordShown(passwordShown ? false : true);
@@ -70,7 +78,9 @@ const Mailer = (props) => {
     <div className="App">
       <header>
         <div class="header">
-          Bulk Email Sender
+          <span>Bulk Email Sender</span>
+          <span ><Button  onClick={handleLogout} className="logout">Logout</Button></span>
+          
         </div> 
       </header>
       <section>
@@ -181,15 +191,10 @@ const mapStateToProps = ({auth}) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    // onTryAutoSignup: () => dispatch(
-    //   {
-    //     type: actions.authCheckState(),
-    //     // payload
-    // }
-    //  )
+    onLogout: () => dispatch(
+      actions.authsignout()
+    )
+  }
+}
 
-    // Get the Details from the local storage item 
-  };
-};
-
-export default connect(mapStateToProps, {})(Mailer);
+export default connect(mapStateToProps, mapDispatchToProps)(Mailer);

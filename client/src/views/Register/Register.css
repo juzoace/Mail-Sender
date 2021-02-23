@@ -51,6 +51,14 @@ body {
     border-radius: 3rem;
 }
 
+.alert {
+    text-align: center;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    margin-top: 1rem;
+    margin-bottom: -4rem;
+}
+
 .form-group {
     text-align: center;
     position: relative

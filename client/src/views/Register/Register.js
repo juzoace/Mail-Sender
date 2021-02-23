@@ -27,10 +27,16 @@ const Register = ({onRegister, onSetErrorToNull}, props) => {
     const [ alerts, setAlerts ] = useState(null);
     const history = useHistory();
     
+    // Sets the page alert feature back to default state 
+    // useEffect(() => {
+    //   if (  successAlertMessage = "Registration successfully, kindly check your mailbox to confirm your registration") {
+    //     setAlerts({message: "Kindly Fill the Form", type: "success"})
+    //   }
+    // }, [])
     useEffect(() => {
       console.log(alertMessage);
       if (alertMessage === null) {
-        let  successAlertMessage = "Kindly Fill in the Form,";
+        let  successAlertMessage = "Kindly Fill the Form";
         setAlerts({message: successAlertMessage, type: "success"})  
       }
     }, [])
@@ -102,8 +108,8 @@ const Register = ({onRegister, onSetErrorToNull}, props) => {
                         Register
                 </div>
              </header>
-             <div>
-             {alerts && <TimeoutAlert message={ alerts.message} type={ alerts.type}  />}
+             <div >
+             {alerts && <TimeoutAlert className="alert" message={ alerts.message} type={ alerts.type}  />}
              </div>
 
              <form className="form" onSubmit={onSubmit}>
