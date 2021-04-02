@@ -40,15 +40,18 @@ const togglePasswordVisiblity = () => {
         setAlerts({message: successAlertMessage, type: "success"})
         
     }
+
+    
     }, [])
 
     useEffect(() => {
 
       return ()=> {
-        console.log(" Check unmounted")
+        console.log(" unmounted")
       }
 
     }, [])
+    
     useEffect(() => {
         if (failureAlertMessage) {
           setAlerts({ message: failureAlertMessage.split("-")[0], type: "danger" })

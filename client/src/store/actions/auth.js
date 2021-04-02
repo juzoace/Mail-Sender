@@ -2,6 +2,7 @@ import axios from 'axios';
 import * as actionTypes from './actionTypes';
 import * as urls from "../../api/index";
 import setAuthToken from '../../utils/setAuthToken';
+
 export const authStart = () => {
     return {
         type: actionTypes.AUTH_START

@@ -4,14 +4,9 @@ const User = mongoose.model('User');
 const passport = require('passport');
 const utils = require('../lib/utils');
 const nodemailer = require('nodemailer');
-// const { token } = req.params;
-
-// validation
-// const { registerValidation, loginValidation } = require("../validation");
 
 router.post('/login', (req, res, next ) => {
     
-    console.log(req.body);
     User.findOne({ username: req.body.username})
         .then((user) => {
             if(!user) {
@@ -65,7 +60,7 @@ router.post('/register', async (req, res, next ) => {
 
         if (nameRetrieved) {
            // Send a response to the user to use a different name
-           console.log("Name block")
+           console.log(nameRetrieved)
            res.status(491).json({
             type: "Error",
             msg: "Name taken, try a diffferent name"
@@ -95,6 +90,9 @@ router.post('/register', async (req, res, next ) => {
                 msg: "Change your name and username`"
             })
         }
+
+
+        
         if (nameRetrieved && usernameRetrieved) return
 
         if (nameRetrieved && emailRetrieved) {
@@ -121,7 +119,7 @@ router.post('/register', async (req, res, next ) => {
                 type: "Error",
                 msg: "Change your Name, Username and Email" 
             })
-        } 
+        };
         if (nameRetrieved && usernameRetrieved && emailRetrieved) return
 
         if (!nameRetrieved && !usernameRetrieved && !emailRetrieved) {
@@ -159,26 +157,25 @@ router.post('/register', async (req, res, next ) => {
         let transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-                user: "uzochukwunwigwe@gmail.com",
-                pass: "googlemail100"
-                // user: `${req.body.details.emailSender}`,
-                // pass: `${req.body.details.emailPassword}`
+                user: `${process.env.EmailSender}`,
+                pass: `${process.env.EmailPassword}`
             }
         });
-    
+   
         let mailOptions = {
-            from: "uzochukwunwigwe@gmail.com",
-            // from: `${req.body.details.emailSender}`,
-            // to: 'nwigweuzochukwu@yahoo.com',
+
+            
+            from: `${process.env.EmailSender}`,
             to: `${req.body.email}`,
             subject: `Please confirm your account`,
-            // text: `${req.body.details.emailMessage}`
+            
             html: `<h1>Email Confirmation</h1>
             <h2>Hello "${req.body.name}"</h2>
             <p>Thank you for subscribing. Please confirm your email by clicking on the following link</p>
             <a href=http://localhost:4000/access/confirm/${token}> Click here</a>
             </div>`
         };
+
 
         transporter.sendMail(mailOptions);
 
@@ -190,8 +187,6 @@ router.post('/register', async (req, res, next ) => {
     try {
         sendMail();
         console.log('Got to the try block')
-        // save new user
-        // send response
     } catch (err) {
         console.log("Failed")
         res.status(401).json({ success: false, msg: "Couldn't send your message, kindly check your input details"})
@@ -199,7 +194,6 @@ router.post('/register', async (req, res, next ) => {
         }
 
 })
-// const { token } = req.params;
 router.post('/confirm/:token', (req, res, next ) => {
     const  token  = req.params.token;
     console.log(token);
