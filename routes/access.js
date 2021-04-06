@@ -4,6 +4,7 @@ const User = mongoose.model('User');
 const passport = require('passport');
 const utils = require('../lib/utils');
 const nodemailer = require('nodemailer');
+const { CLIENT_ORIGIN } = require('../config')
 
 router.post('/login', (req, res, next ) => {
     
@@ -172,10 +173,9 @@ router.post('/register', async (req, res, next ) => {
             html: `<h1>Email Confirmation</h1>
             <h2>Hello "${req.body.name}"</h2>
             <p>Thank you for subscribing. Please confirm your email by clicking on the following link</p>
-            <a href=http://localhost:4000/access/confirm/${token}> Click here</a>
+            <a href='${CLIENT_ORIGIN}/access/confirm/${token}'> Click here</a>
             </div>`
         };
-
 
         transporter.sendMail(mailOptions);
 
@@ -183,6 +183,7 @@ router.post('/register', async (req, res, next ) => {
           registeredName: req.body.name, registeredEmail: req.body.email, registeredUserName: req.body.username
       }})
     }
+
 
     try {
         sendMail();
