@@ -7,6 +7,7 @@
 // });
 
 // export default auth;
-
-export const registerurl = 'http://localhost:4000/access/register';
-export const loginurl = 'http://localhost:4000/access/login';
+import { CLIENT_ORIGIN } from "../config"
+export const registerurl = `${CLIENT_ORIGIN}access/register`;
+export const loginurl = `${CLIENT_ORIGIN}/access/login`;
+export const confirmationTokenurl = `${CLIENT_ORIGIN}/access/tokenConfirm`

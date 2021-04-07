@@ -1,0 +1,7 @@
+{
+    "env": {
+        "EmailSender": "uzochukwunwigwe@gmail.com",
+        "EmailPassword": "calista100@",
+        "DevPort": "http://localhost:4000"
+    }
+}

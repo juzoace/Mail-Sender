@@ -12,7 +12,7 @@ const NotFound = React.lazy(() => import("./views/NotFound/NotFound"));
 const Mailer = React.lazy(() => import ("./views/Mailer/Mailer"));
 const Welcome = React.lazy(() => import ("./views/Welcome/Welcome"));
 const PasswordReset =  React.lazy(() => import ("./views/PasswordReset/PasswordReset"));
-const RegistrationConfirmation = React.lazy(() => import("views/RegistrationConfirmation/RegistrationConfirmation"));
+const RegistrationConfirmation = React.lazy(() => import("./views/RegistrationConfirmation/RegistrationConfirmation"));
 const loading = () => <div className='animated fadeIn pt-3 text-center'>Loading...</div>;
 
 class App extends Component {
@@ -28,10 +28,10 @@ render () {
     <Suspense fallback={loading()}>
     <NavBar />
     <Switch>
+       <Route exact path='/confirmregistration/:token' name='Registration Confirmation' component={RegistrationConfirmation}/>
        <Route exact path='/register' component={Register}/>
        <Route exact path='/login' name='Login' component={Login}/>
        <Route exact path='/reset' name='Reset Password' component={PasswordReset}/>
-       
        <Route exact path='/' name='Welcome' component={Welcome}/>
        <Redirect to="/login" />
        <Route exact path='/*' name='' component={NotFound}/>

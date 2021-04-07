@@ -11,6 +11,7 @@ const routes = [
     { path: "/login", exact: true, name: "Login", component: Login },
     { path: "/register", exact: true, name: "Register", component: Register },
     { path: "*", exact: true, name: "NotFound", component: NotFound }
+
 ]
 
 

@@ -1,5 +1,6 @@
 export {
     // auth,
+    confirmTokens,
     logout,
     // setAuthRedirectPath,
     setLoginErrorToNull,

@@ -118,6 +118,19 @@ export const register = (registerDetails) => {
     }
 }
 
+export const confirmTokens = (token) => {
+    return async dispatch => {
+        try {
+            console.log('got here');
+            let bypass = token;
+            let response = await axios.post(urls.confirmationTokenurl, bypass)
+            console.log(response)
+        } catch(error) {
+
+        }
+    }
+}
+ 
 export const LoginErrorToNull = () => {
     return dispatch => {
         dispatch(LoginErrorToNull)

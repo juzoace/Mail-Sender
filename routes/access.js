@@ -165,7 +165,7 @@ router.post('/register', async (req, res, next ) => {
    
         let mailOptions = {
 
-            
+    
             from: `${process.env.EmailSender}`,
             to: `${req.body.email}`,
             subject: `Please confirm your account`,
@@ -194,20 +194,26 @@ router.post('/register', async (req, res, next ) => {
     }   
         }
 
+
+
+
 })
-router.post('/confirm/:token', (req, res, next ) => {
-    const  token  = req.params.token;
-    console.log(token);
-    console.log("Worked here now");
+router.post('/tokenConfirm', (req, res, next ) => {
+    console.log(req.body.tokenItem)
+    // const  token  = req.params.token;
+    // console.log(token);
+    // console.log("Worked here now");
     User.findOne({
-        confirmationCode: req.params.token
+        confirmationCode: req.body.tokenItem
     })
+
 
     .then((user) => {
         console.log(user)
         if (!user) {
             return res.status(404).send({ message: "User Not found." });
         }
+
 
         user.status = "Active";
         user.save((err) => {
