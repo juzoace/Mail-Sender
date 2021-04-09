@@ -39,7 +39,7 @@ export const authFail = (error) => {
 }
 
 export const logout = () => {
-    console.log("Got here")
+    
     localStorage.removeItem('token');
     localStorage.removeItem('expirationDate');
     localStorage.removeItem('_id');
@@ -63,15 +63,15 @@ export const checkAuthTimeout = (expirationTime) => {
 };
 
 export const authCheckState = () => {
-    console.log('Got to the authCheck kk Block')
+    
     return dispatch => {
-        console.log('Got to the authCheck Block')
+       
         const token = localStorage.getItem('token');
-        console.log(token)
+        
         if (!token) {
             dispatch(logout());
         } else {
-            console.log(token);
+            
             const expirationDate = new Date(localStorage.getItem('expirationDate'));
             if (expirationDate <= new Date()) {
                 dispatch(logout());
@@ -100,10 +100,9 @@ export const setErrorToNull = () => {
 export const register = (registerDetails) => {
    
     return async dispatch => {
-        console.log("Got here frontend dispatch block")
+        
         try {
             let response = await axios.post(urls.registerurl, registerDetails)
-            console.log(response)
             
             if (response.data.success = true) {
                 dispatch(authRegisterSuccess(response.data.msg))
@@ -111,27 +110,27 @@ export const register = (registerDetails) => {
             }
 
         } catch (error) {
-            console.log(error)
             dispatch(authFail(error.response.data.msg + `-${new Date().getTime()}`))
         }
 
     }
 }
 
-export const confirmTokens = (token) => {
-    return async dispatch => {
-        try {
-            console.log('got here');
+
+export const confirmTokens = (token) =>  {
+    
+        return async dispatch => {
+            
             let bypass = token;
             let response = await axios.post(urls.confirmationTokenurl, bypass)
-            console.log(response)
-        } catch(error) {
+            return response;
 
         }
-    }
+        
 }
  
 export const LoginErrorToNull = () => {
+
     return dispatch => {
         dispatch(LoginErrorToNull)
     }
@@ -141,7 +140,7 @@ export const login = (loginDetails) => {
     return async dispatch => {
         try {
             let response = await axios.post(urls.loginurl, loginDetails)
-            console.log(response);
+            
             if (response.data.success = true) {
 
                 const expirationDate= new Date(new Date().getTime() + response.data.expiresIn * 1000);
@@ -149,22 +148,20 @@ export const login = (loginDetails) => {
                 localStorage.setItem('expirationDate', expirationDate );
                 localStorage.setItem('_id', response.data.user._id); 
                 
-                // Delay the authentication stuff
-               console.log("got here first")
-                
                dispatch(authLoginSuccessAlert(response.data.msg)) 
 
                 setTimeout(() => {
-                     console.log('set time ut')
+                     
                 setAuthToken(response.data.token);
                 dispatch(authLoginSuccess(response.data.token, response.data.user._id))
                 dispatch(checkAuthTimeout(response.data.expiresIn));
+
                 }, 5000)
                 
                  
             }
         } catch (error) {
-            console.log(error.response.data.msg)
+            
             dispatch(loginFail(error.response.data.msg + `-${new Date().getTime()}`))
         }
     }
@@ -172,6 +169,7 @@ export const login = (loginDetails) => {
 
 export const authLoginSuccess = (token, _id, msg) => {
     return {
+
         type: actionTypes.AUTH_LOGIN_SUCCESS,
         token: token,
         _id: _id, 

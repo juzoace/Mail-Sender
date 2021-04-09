@@ -11,7 +11,8 @@ const initialState = {
     registerSuccess: null,
     loginFormDetails: null,
     loginError: null,
-    loginSuccess: null
+    loginSuccess: null,
+    emailTokenStatus: null
 }
 
 const authStart = (state, action) => {

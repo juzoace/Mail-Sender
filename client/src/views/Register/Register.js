@@ -22,6 +22,7 @@ const Register = ({onRegister, onSetErrorToNull}, props) => {
         password: "",
     }
 
+    
     const [ registerDetails, setRegisterDetails ] = useState(initialState);
     const [ passwordShown, setPasswordShown ] = useState(false);
     const [ alerts, setAlerts ] = useState(null);

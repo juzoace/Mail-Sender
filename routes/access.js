@@ -22,7 +22,7 @@ router.post('/login', (req, res, next ) => {
 
             } else {
 
-            console.log(req.body.password);
+
             const isValid = utils.validPassword(req.body.password, user.hash, user.salt)
 
             if(isValid) { 
@@ -43,25 +43,20 @@ router.post('/login', (req, res, next ) => {
 })
 
 router.post('/register', async (req, res, next ) => {
-    // req.body.email
-    console.log(req.body.email)
-    console.log("Got here")
+    
         // Name database check
         const nameRetrieved = await User.findOne({ name: req.body.name });
-        // Send the response here 
+        
         
         // Username database check
         const usernameRetrieved = await User.findOne({ username: req.body.username })
-        console.log(usernameRetrieved)
-        // Send the response here
 
         // Email database check
         const emailRetrieved = await User.findOne({ email: req.body.email }) 
-        // Send the response here 
 
         if (nameRetrieved) {
            // Send a response to the user to use a different name
-           console.log(nameRetrieved)
+
            res.status(491).json({
             type: "Error",
             msg: "Name taken, try a diffferent name"
@@ -69,7 +64,7 @@ router.post('/register', async (req, res, next ) => {
         if (nameRetrieved) return
         } 
         if (usernameRetrieved) {
-            console.log("Username Block")
+           
              res.status(491).json({
                 type: "Error", 
                 msg: "Username taken, try a different username "
@@ -78,15 +73,18 @@ router.post('/register', async (req, res, next ) => {
         if (usernameRetrieved) return
 
         if (emailRetrieved) {
-             res.status(491).json({
+             
+            res.status(491).json({
                 type: "Error", 
                 msg: " Email taken, try a different email"
+
             })
         } if (emailRetrieved) return 
 
         if (nameRetrieved && usernameRetrieved) {
             // Tell the user to check the name and username input fields
-             res.status(491).json({
+            
+            res.status(491).json({
                 type: "Error",
                 msg: "Change your name and username`"
             })
@@ -187,9 +185,9 @@ router.post('/register', async (req, res, next ) => {
 
     try {
         sendMail();
-        console.log('Got to the try block')
+
     } catch (err) {
-        console.log("Failed")
+
         res.status(401).json({ success: false, msg: "Couldn't send your message, kindly check your input details"})
     }   
         }
@@ -199,35 +197,43 @@ router.post('/register', async (req, res, next ) => {
 
 })
 router.post('/tokenConfirm', (req, res, next ) => {
-    console.log(req.body.tokenItem)
-    // const  token  = req.params.token;
-    // console.log(token);
-    // console.log("Worked here now");
-    User.findOne({
+   
+    var found = false
+    
+     User.findOne({
         confirmationCode: req.body.tokenItem
     })
-
-
     .then((user) => {
-        console.log(user)
+        
         if (!user) {
             return res.status(404).send({ message: "User Not found." });
         }
 
 
+
         user.status = "Active";
         user.save((err) => {
             if (err) {
+               
             //   res.status(500).send({ message: err });
-            res.status(500).json({ message: err })
-              return;
+            return res.status(500).json({ message: err }) 
             }
             res.status(200).json({message: "Confirmed Successfully"})
             // Redirect to the front end welcome page
-
+            found = true;
+            
           });
+          
     })
-    .catch((e) => console.log("error", e))
+    .catch((err) => {
+
+        // res.sendStatus(400).json({ message: 'User Not Found' })
+        res.status(400).send(err)
+        return err;
+        
+    })
+    
+    
 })
 
 module.exports = router;

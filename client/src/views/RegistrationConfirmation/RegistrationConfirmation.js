@@ -1,32 +1,38 @@
 import React, {useState, useEffect} from 'react';
-import { useSelector, connect, useDispatch } from "react-redux";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import * as actions from "../../store/actions/index";
-// import { confirm } from ''
-const RegistrationConfirmation = ({onConfirmToken, props, match}) => {
 
-    // const initialStae = {
-    //     loading: true,
-    //     success: false
-    // }
-    // const getToken = props.match.params.token;
-    // let {tokenFromParams} = useParams();
-    // let boy = tokenFromParams
-    // console.log(boy);
-    
+const RegistrationConfirmation = ({onConfirmToken,  match}) => {
+
+   
     const [loading, loadingState ] = useState(true);
     const [success, successState ] = useState(false);
+
     useEffect(() => {
-        // props.confirm(props.match.params.token)
+
         let tokenFromParams = match.params;
         
-        console.log(tokenFromParams.token);
 
         onConfirmToken({tokenItem: tokenFromParams.token })
-        .then(() =>  loadingState(false), successState(true))
-        .catch(() => loadingState(false), successState(false))
+
+        .then((response) => {
+    
+            if (response.statusText === 'OK') {
+                loadingState(false)
+                successState(true)
+            } 
+          
+        })
+        .catch((err) => {
+           
+            loadingState(false)
+            successState(false)
+        }) 
+            
     }, [])
+
     return (
         <div>
             <h1>Registration Confirmation Page</h1>
@@ -38,7 +44,7 @@ const RegistrationConfirmation = ({onConfirmToken, props, match}) => {
             success && (
                 <div>
                     Thank you. Your account has been verified
-                    <Link to="/">Proceed</Link>
+                    <Link to="/login">Proceed</Link>
                 </div>
                 
             )
@@ -52,8 +58,6 @@ const RegistrationConfirmation = ({onConfirmToken, props, match}) => {
             )
             }
         </div>
-
-        
 
     )
 };
