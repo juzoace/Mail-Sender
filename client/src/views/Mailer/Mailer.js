@@ -41,7 +41,8 @@ const Mailer = ( props) => {
   let emails;
 
   const handleFileRead = (e) => {
-    
+  
+
     const content = fileReader.result;
     console.log(content);
     const contentExtracted = content.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi);

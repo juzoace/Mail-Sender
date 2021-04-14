@@ -28,12 +28,6 @@ const Register = ({onRegister, onSetErrorToNull}, props) => {
     const [ alerts, setAlerts ] = useState(null);
     const history = useHistory();
     
-    // Sets the page alert feature back to default state 
-    // useEffect(() => {
-    //   if (  successAlertMessage = "Registration successfully, kindly check your mailbox to confirm your registration") {
-    //     setAlerts({message: "Kindly Fill the Form", type: "success"})
-    //   }
-    // }, [])
     useEffect(() => {
       console.log(alertMessage);
       if (alertMessage === null) {
@@ -78,7 +72,7 @@ const Register = ({onRegister, onSetErrorToNull}, props) => {
 
     const togglePasswordVisiblity = () => {
         setPasswordShown(passwordShown ? false : true);
-      };
+    };
     
     const onSubmit = (e) => {
 
@@ -128,7 +122,7 @@ const Register = ({onRegister, onSetErrorToNull}, props) => {
                   onChange={(e) => setRegisterDetails({...registerDetails, name: e.target.value })}
                 />
               </div>  
-
+              
               <div className="form-group">
                 <br></br> 
                 <label for='subject'>Username<span class="required">*</span></label>
@@ -173,11 +167,12 @@ const Register = ({onRegister, onSetErrorToNull}, props) => {
                   placeholder = "Enter Password"
                   onChange = {(e) => setRegisterDetails({...registerDetails, password: e.target.value })}
                 />
+                
                 <a href="#" className="toggle1" onClick={() => togglePasswordVisiblity()}>{passwordShown ? "Hide" : "Show"}</a>
               </div>
               <div className="form-buttons">
                 
-                <div className="login">
+                <div className="">
                 <button
                 type="submit"
                 color="primary"
@@ -186,7 +181,7 @@ const Register = ({onRegister, onSetErrorToNull}, props) => {
                 </button>
                 </div>
                 <div className="login-account">
-                <Link className="login" to="/login">Logon Account</Link>
+                <Link className="login" to="/login">Login Account</Link>
                 </div>
                 <div className="reset-account">
                 <Link className="reset-password" to="/reset">Forgot Password</Link>

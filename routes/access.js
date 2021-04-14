@@ -151,6 +151,7 @@ router.post('/register', async (req, res, next ) => {
            
             })
             
+            
         const sendMail = () => {
 
         let transporter = nodemailer.createTransport({
@@ -192,24 +193,18 @@ router.post('/register', async (req, res, next ) => {
     }   
         }
 
+});
 
-
-
-})
 router.post('/tokenConfirm', (req, res, next ) => {
    
-    var found = false
-    
      User.findOne({
         confirmationCode: req.body.tokenItem
     })
     .then((user) => {
-        
+        console.log(user.name);
         if (!user) {
             return res.status(404).send({ message: "User Not found." });
         }
-
-
 
         user.status = "Active";
         user.save((err) => {
@@ -220,7 +215,6 @@ router.post('/tokenConfirm', (req, res, next ) => {
             }
             res.status(200).json({message: "Confirmed Successfully"})
             // Redirect to the front end welcome page
-            found = true;
             
           });
           
@@ -236,4 +230,144 @@ router.post('/tokenConfirm', (req, res, next ) => {
     
 })
 
+router.post('/resetPassword', (req, res, next) => {
+    console.log(req.body.username)
+    User.findOne({
+        username: req.body.username
+    })
+    .then((user) => {
+       
+        const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let token = '';
+        for (let i = 0; i < 25; i++) {
+        token += characters[Math.floor(Math.random() * characters.length )];
+        }
+
+        console.log(token);
+        user.generatePasswordReset(token);
+        console.log(user);
+        console.log(user.email);
+
+        user.save()
+        .then(() => {
+
+            const sendMail = () => {
+
+                let transporter = nodemailer.createTransport({
+                    service: "gmail",
+                    auth: {
+                        user: `${process.env.EmailSender}`,
+                        pass: `${process.env.EmailPassword}`
+                    }
+                });
+           
+                let mailOptions = {
+        
+                    from: `${process.env.EmailSender}`,
+                    to: `${user.email}`,
+                    subject: `Password reset guide`,
+                    
+                    html: `<h1>Password Reset</h1>
+                    
+                    <p>To reset password kindly follow the link below.</p>
+                    <a href='${CLIENT_ORIGIN}/resetPassword/${token}'> Click here</a>
+                    </div>`
+                };
+            
+                transporter.sendMail(mailOptions);
+       
+              return res.status(200).json({ success: true, msg: "User was registered successfully! Please check your email", user: {
+                  registeredName: req.body.name, registeredEmail: req.body.email, registeredUserName: req.body.username
+              }})
+            }
+
+            sendMail();
+            
+        })
+
+    })
+    .catch((err) => {
+        console.log(err)
+        res.status(400).send(err)
+        return err;
+        
+    })
+})
+
+router.post('/confirmResetToken', (req, res, next) => {
+    // console.log(req.body.resetToken.token);
+    // console.log({$gt: Date.now()})
+    User.findOne({resetPasswordToken: req.body.resetToken.token, resetPasswordExpires: {$gt: Date.now()} })
+        .then((user) => {
+            console.log('found');
+            console.log( Date.now())
+            console.log(user);
+            if (!user) return res.status(401).json({message: 'Password reset token is invalid or has expired.'});
+
+            //Redirect user to form with the email address
+            // res.render('reset', {user});
+            return res.status(200).json({ success: true, msg: 'Password reset token is valid.'});
+        })
+        .catch(err => res.status(500).json({message: err.message}));
+
+})
+
+
+router.post('/passwordChange', ( req, res, next ) => {
+    console.log(req.body.password);
+    console.log(req.body.token);
+    User.findOne({resetPasswordToken: req.body.token, resetPasswordExpires: {$gt: Date.now()}})
+    .then((user) => {
+        console.log(user)
+        if (!user) return res.status(401).json({message: 'Password reset token is invalid or has expired.'})
+        
+         //Set the new password
+         user.password = req.body.password;
+         user.resetPasswordToken = undefined;
+         user.resetPasswordExpires = undefined;
+         console.log(user);
+
+        // Save
+        user.save((err) => {
+            if (err) return res.status(500).json({message: err.message});
+
+            const sendMail = () => {
+                
+            let transporter = nodemailer.createTransport({
+                service: "gmail",
+                auth: {
+                    user: `${process.env.EmailSender}`,
+                    pass: `${process.env.EmailPassword}`
+                }
+            });
+
+            // send email
+            let mailOptions = {
+                to:`${user.email}`,
+                from: `${process.env.EmailSender}`,
+                subject: "Your password has been changed",
+                text: `Hi ${user.username} \n 
+                This is a confirmation that the password for your account ${user.email} has just been changed.\n`
+            };
+
+            transporter.send(mailOptions, (error, result) => {
+                if (error) {
+                console.log(error)
+                return res.status(500).json({message: error.message});
+                }
+                
+            
+                
+                res.status(200).json({message: 'Your password has been updated.'});
+            });
+
+        };
+
+        sendMail();
+
+        });
+
+
+    })
+})
 module.exports = router;

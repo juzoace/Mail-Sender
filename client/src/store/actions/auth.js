@@ -128,7 +128,40 @@ export const confirmTokens = (token) =>  {
         }
         
 }
+
+export const resetPassword = (resetDetails) => {
+    
+    return async dispatch =>{
  
+        // console.log(resetDetails)
+        let response = await axios.post(urls.resetPasswordurl, resetDetails)
+        
+        console.log(response)
+        return response;
+    }
+
+}
+
+export const confirmResetToken = (resetToken) => {
+    
+    return async dispatch => {
+
+        let response = await axios.post(urls.confirmRestTokenurl, resetToken)
+
+        console.log(response);
+        return response
+    }
+}
+ 
+export const PasswordChange = (passwordData) => {
+    return async dispatch => {
+
+        let response = await axios.post(urls.PasswordChangeurl, passwordData)
+        console.log(response);
+        return response
+    }
+}
+
 export const LoginErrorToNull = () => {
 
     return dispatch => {

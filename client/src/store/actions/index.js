@@ -1,5 +1,7 @@
 export {
     // auth,
+    PasswordChange,
+    confirmResetToken,
     confirmTokens,
     logout,
     // setAuthRedirectPath,
@@ -8,7 +10,8 @@ export {
     login,
     setErrorToNull,
     register,
-    authCheckState
+    authCheckState,
+    resetPassword
 } from './auth';
 
 export {

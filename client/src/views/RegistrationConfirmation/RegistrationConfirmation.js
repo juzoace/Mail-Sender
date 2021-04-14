@@ -14,7 +14,6 @@ const RegistrationConfirmation = ({onConfirmToken,  match}) => {
 
         let tokenFromParams = match.params;
         
-
         onConfirmToken({tokenItem: tokenFromParams.token })
 
         .then((response) => {
@@ -26,7 +25,7 @@ const RegistrationConfirmation = ({onConfirmToken,  match}) => {
           
         })
         .catch((err) => {
-           
+            console.log(err)
             loadingState(false)
             successState(false)
         }) 
@@ -83,7 +82,5 @@ const mapDispatchToProps = dispatch => {
        )
     };
 };
-
-
 
 export default connect( mapStateToProps, mapDispatchToProps)( RegistrationConfirmation);
