@@ -51,6 +51,14 @@ body {
     border-radius: 3rem;
 }
 
+.alert {
+    text-align: center;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    margin-top: 1rem;
+    margin-bottom: -4rem;
+}
+
 .form-group {
     text-align: center;
     position: relative
@@ -160,6 +168,7 @@ button:active {
     padding: 0.8rem 3rem;
     font-size: 1.2rem;;
     border-radius: .5rem;
+    border-bottom: 3rem
 }
 
 .register:hover {
@@ -196,5 +205,29 @@ button:active {
 }
 
 .reset-password:active {
+    transform: translateY(-.1rem)
+}
+
+.login:link,
+.login:visited {
+    color: rgb(207, 178, 178);
+    text-decoration: none;
+    text-transform: uppercase;
+    background-color: #F02D78;
+    color: white;
+    padding: 0.8rem 3rem;
+    font-size: 1.2rem;;
+    border-radius: .5rem;
+    border-top: 3rem;
+    
+}
+
+
+.login:hover {
+    transform: translateY(-0.5rem) !important;
+    box-shadow: 0 1rem 2rem rgba(0,0,0,.2) ;
+}
+
+.login:active {
     transform: translateY(-.1rem)
 }

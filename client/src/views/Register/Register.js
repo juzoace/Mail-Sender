@@ -22,6 +22,7 @@ const Register = ({onRegister, onSetErrorToNull}, props) => {
         password: "",
     }
 
+    
     const [ registerDetails, setRegisterDetails ] = useState(initialState);
     const [ passwordShown, setPasswordShown ] = useState(false);
     const [ alerts, setAlerts ] = useState(null);
@@ -30,7 +31,7 @@ const Register = ({onRegister, onSetErrorToNull}, props) => {
     useEffect(() => {
       console.log(alertMessage);
       if (alertMessage === null) {
-        let  successAlertMessage = "Kindly Fill in the Form,";
+        let  successAlertMessage = "Kindly Fill the Form";
         setAlerts({message: successAlertMessage, type: "success"})  
       }
     }, [])
@@ -71,7 +72,7 @@ const Register = ({onRegister, onSetErrorToNull}, props) => {
 
     const togglePasswordVisiblity = () => {
         setPasswordShown(passwordShown ? false : true);
-      };
+    };
     
     const onSubmit = (e) => {
 
@@ -102,8 +103,8 @@ const Register = ({onRegister, onSetErrorToNull}, props) => {
                         Register
                 </div>
              </header>
-             <div>
-             {alerts && <TimeoutAlert message={ alerts.message} type={ alerts.type}  />}
+             <div >
+             {alerts && <TimeoutAlert className="alert" message={ alerts.message} type={ alerts.type}  />}
              </div>
 
              <form className="form" onSubmit={onSubmit}>
@@ -121,7 +122,7 @@ const Register = ({onRegister, onSetErrorToNull}, props) => {
                   onChange={(e) => setRegisterDetails({...registerDetails, name: e.target.value })}
                 />
               </div>  
-
+              
               <div className="form-group">
                 <br></br> 
                 <label for='subject'>Username<span class="required">*</span></label>
@@ -166,11 +167,12 @@ const Register = ({onRegister, onSetErrorToNull}, props) => {
                   placeholder = "Enter Password"
                   onChange = {(e) => setRegisterDetails({...registerDetails, password: e.target.value })}
                 />
+                
                 <a href="#" className="toggle1" onClick={() => togglePasswordVisiblity()}>{passwordShown ? "Hide" : "Show"}</a>
               </div>
               <div className="form-buttons">
                 
-                <div className="login">
+                <div className="">
                 <button
                 type="submit"
                 color="primary"
@@ -179,7 +181,7 @@ const Register = ({onRegister, onSetErrorToNull}, props) => {
                 </button>
                 </div>
                 <div className="login-account">
-                <Link className="login" to="/login">Logon Account</Link>
+                <Link className="login" to="/login">Login Account</Link>
                 </div>
                 <div className="reset-account">
                 <Link className="reset-password" to="/reset">Forgot Password</Link>

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as actionTypes from './actionTypes';
 import * as urls from "../../api/index";
+import setAuthToken from '../../utils/setAuthToken';
 
 export const authStart = () => {
     return {
@@ -8,11 +9,11 @@ export const authStart = () => {
     };
 };
 
-export const authSuccess = (token, userId) => {
+export const authSuccess = (token, _id) => {
     return {
         type: actionTypes.AUTH_SUCCESS,
-        idToken: token,
-        userId: userId
+        token: token,
+        _id: _id
     };
 };
 
@@ -38,13 +39,20 @@ export const authFail = (error) => {
 }
 
 export const logout = () => {
+    
     localStorage.removeItem('token');
     localStorage.removeItem('expirationDate');
-    localStorage.removeItem('userId');
+    localStorage.removeItem('_id');
     return {
         type: actionTypes.AUTH_LOGOUT
     };
 };
+
+export const authsignout = () => {
+    return dispatch => {
+        dispatch(logout());
+    }
+}
 
 export const checkAuthTimeout = (expirationTime) => {
     return dispatch => {
@@ -55,19 +63,22 @@ export const checkAuthTimeout = (expirationTime) => {
 };
 
 export const authCheckState = () => {
-    return dispatch => {
-
-        const token = localStorage.getItem('token');
     
+    return dispatch => {
+       
+        const token = localStorage.getItem('token');
+        
         if (!token) {
             dispatch(logout());
         } else {
+            
             const expirationDate = new Date(localStorage.getItem('expirationDate'));
             if (expirationDate <= new Date()) {
                 dispatch(logout());
             } else {
-                const userId = localStorage.getItem('userId');
-                dispatch(authSuccess(token, userId));
+                // setAuthToken(token);
+                const _id = localStorage.getItem('_id');
+                dispatch(authSuccess(token, _id));
                 dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000 ));
             }   
         }
@@ -89,10 +100,9 @@ export const setErrorToNull = () => {
 export const register = (registerDetails) => {
    
     return async dispatch => {
-        console.log("Got here frontend dispatch block")
+        
         try {
             let response = await axios.post(urls.registerurl, registerDetails)
-            console.log(response)
             
             if (response.data.success = true) {
                 dispatch(authRegisterSuccess(response.data.msg))
@@ -100,14 +110,60 @@ export const register = (registerDetails) => {
             }
 
         } catch (error) {
-            console.log(error)
             dispatch(authFail(error.response.data.msg + `-${new Date().getTime()}`))
         }
 
     }
 }
 
+
+export const confirmTokens = (token) =>  {
+    
+        return async dispatch => {
+            
+            let bypass = token;
+            let response = await axios.post(urls.confirmationTokenurl, bypass)
+            return response;
+
+        }
+        
+}
+
+export const resetPassword = (resetDetails) => {
+    
+    return async dispatch =>{
+ 
+        // console.log(resetDetails)
+        let response = await axios.post(urls.resetPasswordurl, resetDetails)
+        
+        console.log(response)
+        return response;
+    }
+
+}
+
+export const confirmResetToken = (resetToken) => {
+    
+    return async dispatch => {
+
+        let response = await axios.post(urls.confirmRestTokenurl, resetToken)
+
+        console.log(response);
+        return response
+    }
+}
+ 
+export const PasswordChange = (passwordData) => {
+    return async dispatch => {
+
+        let response = await axios.post(urls.PasswordChangeurl, passwordData)
+        console.log(response);
+        return response
+    }
+}
+
 export const LoginErrorToNull = () => {
+
     return dispatch => {
         dispatch(LoginErrorToNull)
     }
@@ -117,29 +173,51 @@ export const login = (loginDetails) => {
     return async dispatch => {
         try {
             let response = await axios.post(urls.loginurl, loginDetails)
-            console.log(response);
+            
             if (response.data.success = true) {
+
+                const expirationDate= new Date(new Date().getTime() + response.data.expiresIn * 1000);
                 localStorage.setItem('token', response.data.token);
-                localStorage.setItem('expirationDate', response.data.expiresIn );
-                localStorage.setItem('userId', response.data._id); 
-                dispatch(authLoginSuccess(response.data.token, response.data._id))
-                dispatch(checkAuthTimeout(response.data.expiresIn));
+                localStorage.setItem('expirationDate', expirationDate );
+                localStorage.setItem('_id', response.data.user._id); 
                 
+               dispatch(authLoginSuccessAlert(response.data.msg)) 
+
+                setTimeout(() => {
+                     
+                setAuthToken(response.data.token);
+                dispatch(authLoginSuccess(response.data.token, response.data.user._id))
+                dispatch(checkAuthTimeout(response.data.expiresIn));
+
+                }, 5000)
+                
+                 
             }
         } catch (error) {
-            console.log(error.response.data.msg)
+            
             dispatch(loginFail(error.response.data.msg + `-${new Date().getTime()}`))
         }
     }
 }
 
-export const authLoginSuccess = (token, _id) => {
+export const authLoginSuccess = (token, _id, msg) => {
     return {
+
         type: actionTypes.AUTH_LOGIN_SUCCESS,
         token: token,
-        _id: _id
+        _id: _id, 
+        msg: msg
+
     }
 }
+
+export const authLoginSuccessAlert = (msg) => {
+    return {
+        type: actionTypes.AUTH_LOGIN_SUCCESS_ALERT,
+        msg: msg
+    }
+}
+
 
 export const loginFail = (loginError) => {
     return {

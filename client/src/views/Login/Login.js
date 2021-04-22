@@ -5,10 +5,16 @@ import PropTypes from "prop-types";
 import {Alert} from "reactstrap";
 import * as actions from "../../store/actions/index"
 import "./Login.css";
-const Login = ({onLogin,setToken, loginUser, onSetLoginErrorToNull}) => {
+const Login = ({onLogin, setToken, loginUser, onSetLoginErrorToNull}) => {
 
-const dispatch = useDispatch()    
+const dispatch = useDispatch();     
 let formDetails = useSelector(state => state.auth.loginFormDetails)
+
+let successAlertMessage = useSelector(state => state.auth.loginSuccess);
+let failureAlertMessage = useSelector(state => state.auth.loginError);
+
+console.log(failureAlertMessage);
+console.log(successAlertMessage);
 
 const initialState = {
     name: "",
@@ -16,9 +22,6 @@ const initialState = {
     email: "",
     password: "",
 }
-
-let failureAlertMessage = useSelector(state => state.auth.loginError);
-// let successAlertMessage = useSelector(state => state.auth.)
 const [ loginDetails, setLoginDetails ] = useState(initialState);
 const [ passwordShown, setPasswordShown ] = useState(false);
 const [ alerts, setAlerts ] = useState(null);
@@ -27,32 +30,41 @@ const togglePasswordVisiblity = () => {
   setPasswordShown(passwordShown ? false : true);
 };
 
-    // useEffect(() => {
-    //     // Set the form details to the stuff
-    //     if ( formDetails!== null) {
-    //         console.log(formDetails);
-    //         setLoginDetails({...loginDetails, username: formDetails.registeredUserName, name: formDetails.registeredName, email: formDetails.registeredEmail }) 
-    //     }
-    // }, [])
-
-    // ComponentDidMount
     useEffect(() => {
-        console.log(failureAlertMessage)
+       if (failureAlertMessage === null ) {
+        //    let failureAlertMessage = "Kindly Fill the Form";
+        //    setAlerts({message: failureAlertMessage, type: 'success'})
+
+        let successAlertMessage = "Kindly Fill the Form";
+        console.log(successAlertMessage);
+        setAlerts({message: successAlertMessage, type: "success"})
+        
+    }
+
+    
     }, [])
 
+    useEffect(() => {
+
+      return ()=> {
+        console.log(" unmounted")
+      }
+
+    }, [])
+    
     useEffect(() => {
         if (failureAlertMessage) {
           setAlerts({ message: failureAlertMessage.split("-")[0], type: "danger" })
         }
       }, [failureAlertMessage])
 
-    // useEffect(() => {
-    //     if (successAlertMessage) {
+      useEffect(() => {
+        if (successAlertMessage) {
           
-    //       let  successAlertMessage = "Registration successfully, kindly check your mailbox to confirm your registration";
-    //       setAlerts({ message: successAlertMessage, type: "success" })
-    //     }
-    //   }, [successAlertMessage])
+          let  successAlertMessage = "Login successfully";
+          setAlerts({ message: successAlertMessage, type: "success" })
+        }
+      }, [successAlertMessage])
 
     const TimeoutAlert = function ({ message, type }) {
 
@@ -93,7 +105,7 @@ const togglePasswordVisiblity = () => {
             </header>
 
             <div>
-             {alerts && <TimeoutAlert message={ alerts.message} type={ alerts.type}  />}
+             {alerts && <TimeoutAlert className="alert" message={ alerts.message} type={ alerts.type}  />}
              </div>
          
             <form className="form" onSubmit={onSubmit}>

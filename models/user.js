@@ -15,13 +15,30 @@ const UserSchema = new mongoose.Schema({
       confirmationCode: { 
         type: String, 
         unique: true },
+      resetPasswordToken: {
+        type: String,
+        required: false
+      },
+      resetPasswordExpires: {
+        type: Date,
+        required: false
+      },
       roles: [
         {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Role"
         }
       ]
-});
+}, {timestamps: true});
+
+
+
+UserSchema.methods.generatePasswordReset = function(token) {
+  
+ 
+  this.resetPasswordToken = token
+  this.resetPasswordExpires = Date.now() + 3600000; //expires in an hour
+};
 
 // UserSchema.plugin(uniqueValidator);
 mongoose.model('User', UserSchema);

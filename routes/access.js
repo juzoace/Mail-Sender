@@ -4,14 +4,10 @@ const User = mongoose.model('User');
 const passport = require('passport');
 const utils = require('../lib/utils');
 const nodemailer = require('nodemailer');
-// const { token } = req.params;
-
-// validation
-// const { registerValidation, loginValidation } = require("../validation");
+const { CLIENT_ORIGIN } = require('../config')
 
 router.post('/login', (req, res, next ) => {
     
-    console.log(req.body);
     User.findOne({ username: req.body.username})
         .then((user) => {
             if(!user) {
@@ -26,13 +22,13 @@ router.post('/login', (req, res, next ) => {
 
             } else {
 
-            console.log(req.body.password);
+
             const isValid = utils.validPassword(req.body.password, user.hash, user.salt)
 
             if(isValid) { 
                 const tokenObject = utils.issueJWT(user);
                 
-                res.status(200).json({ success: true, user: user, token: tokenObject.token, expiresIn: "3600"})
+                res.status(200).json({ success: true, msg: "Login Successful", user: user, token: tokenObject.token, expiresIn: "3600"})
             
             } else {
             
@@ -47,25 +43,20 @@ router.post('/login', (req, res, next ) => {
 })
 
 router.post('/register', async (req, res, next ) => {
-    // req.body.email
-    console.log(req.body.email)
-    console.log("Got here")
+    
         // Name database check
         const nameRetrieved = await User.findOne({ name: req.body.name });
-        // Send the response here 
+        
         
         // Username database check
         const usernameRetrieved = await User.findOne({ username: req.body.username })
-        console.log(usernameRetrieved)
-        // Send the response here
 
         // Email database check
         const emailRetrieved = await User.findOne({ email: req.body.email }) 
-        // Send the response here 
 
         if (nameRetrieved) {
            // Send a response to the user to use a different name
-           console.log("Name block")
+
            res.status(491).json({
             type: "Error",
             msg: "Name taken, try a diffferent name"
@@ -73,7 +64,7 @@ router.post('/register', async (req, res, next ) => {
         if (nameRetrieved) return
         } 
         if (usernameRetrieved) {
-            console.log("Username Block")
+           
              res.status(491).json({
                 type: "Error", 
                 msg: "Username taken, try a different username "
@@ -82,19 +73,25 @@ router.post('/register', async (req, res, next ) => {
         if (usernameRetrieved) return
 
         if (emailRetrieved) {
-             res.status(491).json({
+             
+            res.status(491).json({
                 type: "Error", 
                 msg: " Email taken, try a different email"
+
             })
         } if (emailRetrieved) return 
 
         if (nameRetrieved && usernameRetrieved) {
             // Tell the user to check the name and username input fields
-             res.status(491).json({
+            
+            res.status(491).json({
                 type: "Error",
                 msg: "Change your name and username`"
             })
         }
+
+
+        
         if (nameRetrieved && usernameRetrieved) return
 
         if (nameRetrieved && emailRetrieved) {
@@ -121,7 +118,7 @@ router.post('/register', async (req, res, next ) => {
                 type: "Error",
                 msg: "Change your Name, Username and Email" 
             })
-        } 
+        };
         if (nameRetrieved && usernameRetrieved && emailRetrieved) return
 
         if (!nameRetrieved && !usernameRetrieved && !emailRetrieved) {
@@ -154,29 +151,28 @@ router.post('/register', async (req, res, next ) => {
            
             })
             
+            
         const sendMail = () => {
 
         let transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-                user: "uzochukwunwigwe@gmail.com",
-                pass: "googlemail100"
-                // user: `${req.body.details.emailSender}`,
-                // pass: `${req.body.details.emailPassword}`
+                user: `${process.env.EmailSender}`,
+                pass: `${process.env.EmailPassword}`
             }
         });
-    
+   
         let mailOptions = {
-            from: "uzochukwunwigwe@gmail.com",
-            // from: `${req.body.details.emailSender}`,
-            // to: 'nwigweuzochukwu@yahoo.com',
+
+    
+            from: `${process.env.EmailSender}`,
             to: `${req.body.email}`,
             subject: `Please confirm your account`,
-            // text: `${req.body.details.emailMessage}`
+            
             html: `<h1>Email Confirmation</h1>
             <h2>Hello "${req.body.name}"</h2>
             <p>Thank you for subscribing. Please confirm your email by clicking on the following link</p>
-            <a href=http://localhost:4000/access/confirm/${token}> Click here</a>
+            <a href='${CLIENT_ORIGIN}/access/confirm/${token}'> Click here</a>
             </div>`
         };
 
@@ -187,29 +183,25 @@ router.post('/register', async (req, res, next ) => {
       }})
     }
 
+
     try {
         sendMail();
-        console.log('Got to the try block')
-        // save new user
-        // send response
+
     } catch (err) {
-        console.log("Failed")
+
         res.status(401).json({ success: false, msg: "Couldn't send your message, kindly check your input details"})
     }   
         }
 
-})
-// const { token } = req.params;
-router.post('/confirm/:token', (req, res, next ) => {
-    const  token  = req.params.token;
-    console.log(token);
-    console.log("Worked here now");
-    User.findOne({
-        confirmationCode: req.params.token
-    })
+});
 
+router.post('/tokenConfirm', (req, res, next ) => {
+   
+     User.findOne({
+        confirmationCode: req.body.tokenItem
+    })
     .then((user) => {
-        console.log(user)
+        console.log(user.name);
         if (!user) {
             return res.status(404).send({ message: "User Not found." });
         }
@@ -217,16 +209,165 @@ router.post('/confirm/:token', (req, res, next ) => {
         user.status = "Active";
         user.save((err) => {
             if (err) {
+               
             //   res.status(500).send({ message: err });
-            res.status(500).json({ message: err })
-              return;
+            return res.status(500).json({ message: err }) 
             }
             res.status(200).json({message: "Confirmed Successfully"})
             // Redirect to the front end welcome page
-
+            
           });
+          
     })
-    .catch((e) => console.log("error", e))
+    .catch((err) => {
+
+        // res.sendStatus(400).json({ message: 'User Not Found' })
+        res.status(400).send(err)
+        return err;
+        
+    })
+    
+    
 })
 
+router.post('/resetPassword', (req, res, next) => {
+    console.log(req.body.username)
+    User.findOne({
+        username: req.body.username
+    })
+    .then((user) => {
+       
+        const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let token = '';
+        for (let i = 0; i < 25; i++) {
+        token += characters[Math.floor(Math.random() * characters.length )];
+        }
+
+        console.log(token);
+        user.generatePasswordReset(token);
+        console.log(user);
+        console.log(user.email);
+
+        user.save()
+        .then(() => {
+
+            const sendMail = () => {
+
+                let transporter = nodemailer.createTransport({
+                    service: "gmail",
+                    auth: {
+                        user: `${process.env.EmailSender}`,
+                        pass: `${process.env.EmailPassword}`
+                    }
+                });
+           
+                let mailOptions = {
+        
+                    from: `${process.env.EmailSender}`,
+                    to: `${user.email}`,
+                    subject: `Password reset guide`,
+                    
+                    html: `<h1>Password Reset</h1>
+                    
+                    <p>To reset password kindly follow the link below.</p>
+                    <a href='${CLIENT_ORIGIN}/resetPassword/${token}'> Click here</a>
+                    </div>`
+                };
+            
+                transporter.sendMail(mailOptions);
+       
+              return res.status(200).json({ success: true, msg: "User was registered successfully! Please check your email", user: {
+                  registeredName: req.body.name, registeredEmail: req.body.email, registeredUserName: req.body.username
+              }})
+            }
+
+            sendMail();
+            
+        })
+
+    })
+    .catch((err) => {
+        console.log(err)
+        res.status(400).send(err)
+        return err;
+        
+    })
+})
+
+router.post('/confirmResetToken', (req, res, next) => {
+    // console.log(req.body.resetToken.token);
+    // console.log({$gt: Date.now()})
+    User.findOne({resetPasswordToken: req.body.resetToken.token, resetPasswordExpires: {$gt: Date.now()} })
+        .then((user) => {
+            console.log('found');
+            console.log( Date.now())
+            console.log(user);
+            if (!user) return res.status(401).json({message: 'Password reset token is invalid or has expired.'});
+
+            //Redirect user to form with the email address
+            // res.render('reset', {user});
+            return res.status(200).json({ success: true, msg: 'Password reset token is valid.'});
+        })
+        .catch(err => res.status(500).json({message: err.message}));
+
+})
+
+
+router.post('/passwordChange', ( req, res, next ) => {
+    console.log(req.body.password);
+    console.log(req.body.token);
+    User.findOne({resetPasswordToken: req.body.token, resetPasswordExpires: {$gt: Date.now()}})
+    .then((user) => {
+        console.log(user)
+        if (!user) return res.status(401).json({message: 'Password reset token is invalid or has expired.'})
+        
+         //Set the new password
+         user.password = req.body.password;
+         user.resetPasswordToken = undefined;
+         user.resetPasswordExpires = undefined;
+         console.log(user);
+
+        // Save
+        user.save((err) => {
+            if (err) return res.status(500).json({message: err.message});
+
+            const sendMail = () => {
+                
+            let transporter = nodemailer.createTransport({
+                service: "gmail",
+                auth: {
+                    user: `${process.env.EmailSender}`,
+                    pass: `${process.env.EmailPassword}`
+                }
+            });
+
+            // send email
+            let mailOptions = {
+                to:`${user.email}`,
+                from: `${process.env.EmailSender}`,
+                subject: "Your password has been changed",
+                text: `Hi ${user.username} \n 
+                This is a confirmation that the password for your account ${user.email} has just been changed.\n`
+            };
+
+            transporter.send(mailOptions, (error, result) => {
+                if (error) {
+                console.log(error)
+                return res.status(500).json({message: error.message});
+                }
+                
+            
+                
+                res.status(200).json({message: 'Your password has been updated.'});
+            });
+
+        };
+
+        sendMail();
+
+        });
+
+
+    })
+})
 module.exports = router;

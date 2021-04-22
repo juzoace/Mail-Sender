@@ -8,8 +8,6 @@ router.post("/send", (req, res, next) => {
         let transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-                // user: "uzochukwunwigwe@gmail.com",
-                // pass: "googlemail100"
                 user: `${req.body.details.emailSender}`,
                 pass: `${req.body.details.emailPassword}`
             }

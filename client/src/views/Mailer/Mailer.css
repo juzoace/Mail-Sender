@@ -32,3 +32,16 @@ textarea {
     color: black;
     border: 10px;
 }
+
+.logout {
+
+}
+
+.logout:hover {
+    cursor: pointer;
+    transform: translateY(-0.5rem);
+}
+
+.logout:active {
+    transform: translateY(-.3rem)
+}

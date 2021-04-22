@@ -35,7 +35,6 @@ app.use(passport.initialize());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
-
 app.use(cors());
 
 // Setting up static directories
@@ -43,6 +42,7 @@ app.use(cors());
 
 // Bring in the Users route
 app.use(require('./routes'));
+
 
 // app.get('*', (req, res) => {
 //     res.sendFile(path.join(__dirname, 'public/index.html'));
